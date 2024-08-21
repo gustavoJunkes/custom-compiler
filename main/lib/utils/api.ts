@@ -1,4 +1,4 @@
-type Params = { [key: string]: any; };
+type Params = { [key: string]: any };
 
 /**
  * Removes all query parameters from a URL.

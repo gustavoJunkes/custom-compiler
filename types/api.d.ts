@@ -17,7 +17,7 @@ export type SysInfo = {
     cpu: {
         percentage: string;
         str: string;
-    },
+    };
     memory: {
         available: string;
         used: string;
