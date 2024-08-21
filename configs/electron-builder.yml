@@ -1,0 +1,12 @@
+appId: com.yoratoni.nextron
+productName: Nextron Boilerplate
+copyright: Copyright © 2024 Yoratoni
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null

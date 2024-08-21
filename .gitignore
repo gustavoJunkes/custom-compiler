@@ -1,0 +1,45 @@
+# Archives
+/archives
+
+# IDE
+/.vscode
+
+# Dependencies
+/node_modules
+
+# Testing
+/coverage
+
+# Next.js
+**/.next/
+/out/
+
+# Production
+/build
+/dist
+/app
+
+# Debug / logs
+*.log
+
+# Typescript
+*.tsbuildinfo
+
+# Secrets
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# Build tools specific
+npm-debug.log
+yarn-error.log
+
+# Editors specific
+.fleet
+.idea
+.vscode
+
+# Platform specific
+.DS_Store
+*.pem
