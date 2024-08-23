@@ -9,7 +9,6 @@ export default function Home() {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const lineNumbersRef = useRef<HTMLDivElement>(null);
-  const [isConsoleVisible, setIsConsoleVisible] = useState(false);
   const [consoleOutput, setConsoleOutput] = useState('');
   const [currentFileName, setCurrentFileName] = useState<string | null>(null);
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null);
@@ -29,7 +28,7 @@ export default function Home() {
       setLines(1);
       setConsoleOutput('');
       setCurrentFileName(null);
-      setCurrentFileHandle(null); 
+      setCurrentFileHandle(null);
     }
   };
 
@@ -57,11 +56,11 @@ export default function Home() {
   };
 
   const showTeam = () => {
-    setConsoleOutput('Integrantes: Jessé Antônio Effting Serpa, Gustavo Henrique Junkes, Gabriel Borba');
+    setConsoleOutput('Integrantes: Jessé Antônio Effting Serpa, Gustavo Henrique Junkes, Gabriel de Borba');
   }
 
   const saveFile = async () => {
-    if (currentFileHandle) {
+    if (currentFileHandle && currentFileName != "Novo") {
       try {
         const writable = await currentFileHandle.createWritable();
         await writable.write(textAreaRef.current!.value);
@@ -71,7 +70,7 @@ export default function Home() {
         setConsoleOutput('Erro ao salvar o arquivo.');
       }
     } else {
-      // Salvar como um novo arquivo
+      debugger
       const fileHandle = await window.showSaveFilePicker({
         suggestedName: 'novo_arquivo.txt',
         types: [{
@@ -112,12 +111,8 @@ export default function Home() {
     event.target.value = '';
   };
 
-  const toggleConsole = () => {
-    setIsConsoleVisible(!isConsoleVisible);
-  };
-
   const compile = async () => {
-    setConsoleOutput("Compilação de programas ainda não foi implementada"); 
+    setConsoleOutput("Compilação de programas ainda não foi implementada");
   };
 
   useEffect(() => {
@@ -162,7 +157,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-white overflow-hidden">
+    <div className="h-screen flex flex-col bg-gray-900 text-white">
       <Head>
         <title>Text Editor</title>
       </Head>
@@ -172,7 +167,7 @@ export default function Home() {
         <div className="flex items-center space-x-4">
           <div className="bg-blue-500 p-2 rounded">IDE</div>
           <div className="flex space-x-8">
-          <div className="flex items-center space-x-1 cursor-pointer" onClick={newFile}>
+            <div className="flex items-center space-x-1 cursor-pointer" onClick={newFile}>
               <DocumentIcon className="h-5 w-5" />
               <span>Novo</span>
               <span className="text-xs">[Ctrl N]</span>
@@ -218,14 +213,14 @@ export default function Home() {
               <UserGroupIcon className="h-5 w-5" />
               <span>Equipe</span>
               <span className="text-xs">[F1]</span>
-            </div> 
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-grow overflow-hidden">
-        
+      <div className="flex flex-grow">
+
 
         {/* Editor and Line Numbers */}
         <div className="flex flex-grow relative">
@@ -233,7 +228,7 @@ export default function Home() {
           <div
             ref={lineNumbersRef}
             className="bg-gray-900 text-gray-400 text-right pr-4 pt-1 absolute top-0 bottom-0 left-0"
-            style={{ width: '4rem', overflowY: 'hidden', pointerEvents: 'none' }}
+            style={{ width: '4rem' }}
           >
             {Array.from({ length: lines }, (_, i) => (
               <div key={i} className="leading-6">{i + 1}</div>
@@ -244,7 +239,7 @@ export default function Home() {
           <div className="flex-grow ml-16">
             <textarea
               ref={textAreaRef}
-              className="w-full h-full bg-gray-900 text-white border-none outline-none resize-none leading-6 whitespace-nowrap overflow-y-auto"
+              className="w-full h-full bg-gray-900 text-white border-none outline-none resize-none leading-6 whitespace-nowrap"
               onChange={handleInputChange}
               onScroll={handleScroll}
               rows={10}
@@ -254,19 +249,39 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Static Console */}
-      {true && (
-        <div className="bg-gray-800 p-2 overflow-auto" style={{ height: "200px" }}>
+      {/* Container for Console and Status Bar */}
+      <div className="relative">
+        {/* Resizable Console */}
+        <div
+          className="bg-gray-800 p-2 overflow-auto"
+          style={{
+            height: "200px",
+            position: "fixed",
+            bottom: "1.5rem",
+            left: 0,
+            right: 0,
+            resize: "vertical",
+            overflow: "auto"
+          }}
+        >
           <div className="text-sm">{consoleOutput}</div>
         </div>
-      )}
 
-      {/* Bottom Bar */}
-      <div className="bg-gray-800 px-4 py-2 flex items-center justify-between">
-        
-        <div className="text-sm">Arquivo: {currentFileName || "Novo"} </div>
-        <div className="text-sm">Linhas: {lines}</div>
+        {/* Status Bar */}
+        <div
+          className="bg-gray-800 px-4 py-2 flex items-center justify-between"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <div className="text-sm">Arquivo: {currentFileName || "Novo"}</div>
+          <div className="text-sm">Linhas: {lines}</div>
+        </div>
       </div>
+
     </div>
   );
 }
