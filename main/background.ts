@@ -22,12 +22,9 @@ app.on("ready", async () => {
 
     // Load the app
     if (app.isPackaged) {
-        debugger
         await mainWindow.loadURL("app://./home");
     } else {
-        debugger
         const port = process.argv[2];
-        console.log(port)
         await mainWindow.loadURL(`http://localhost:${port}/home`);
     }
 

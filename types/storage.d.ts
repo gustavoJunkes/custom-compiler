@@ -17,11 +17,11 @@ export type WindowStorage = {
 export type PreferencesObj = {
     security: {
         screenshotProtection: boolean;
-    }
+    };
     window: {
         startMaximized: boolean;
         restoreCoordinates: boolean;
-    },
+    };
     sysInfo: {
         refreshInterval: number;
     };
@@ -41,6 +41,6 @@ export type Preferences = {
  * statically imported from the default TS files.
  */
 export type Storage = {
-    windowsStorage: { [windowName: string]: WindowStorage; };
+    windowsStorage: { [windowName: string]: WindowStorage };
     preferences: PreferencesObj;
 }

@@ -13,10 +13,11 @@ export default function Home() {
   const [currentFileName, setCurrentFileName] = useState<string | null>(null);
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const numberOfLines = e.target.value.split('\n').length;
-    setLines(numberOfLines);
-  };
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const numberOfLines = e.target.value.split("\n").length;
+        setLines(numberOfLines);
+    };
+
 
   const openFile = () => {
     fileInputRef?.current?.click();

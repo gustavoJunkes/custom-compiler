@@ -1,5 +1,7 @@
 /** @type {import("next").NextConfig} */
 module.exports = {
+    output: 'export',
+    distDir: '../app',
     reactStrictMode: true,
     swcMinify: true,
     trailingSlash: true,
