@@ -8,7 +8,6 @@
     "v-bump": "yarn version --patch",
     "dev": "nextron",
     "build": "nextron build --config ./configs/electron-builder.yml",
-    "postinstall": "electron-builder install-app-deps",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --fix",
     "check-types": "tsc --noEmit --skipLibCheck --incremental false",
