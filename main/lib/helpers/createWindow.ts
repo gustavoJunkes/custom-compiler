@@ -59,7 +59,7 @@ export default async function createWindow(
         y: windowStorage.y as number,
         width: windowStorage.width as number,
         height: windowStorage.height as number,
-        minWidth: 1024,
+        minWidth: 1200,
         minHeight: 768,
         show: false,
         frame: !isSplash,

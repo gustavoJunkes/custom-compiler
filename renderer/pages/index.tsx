@@ -3,22 +3,22 @@
 
 import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
-import { ClipboardDocumentIcon, ClipboardIcon, CodeBracketIcon, DocumentIcon, ExclamationTriangleIcon, PlayIcon, ScissorsIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import { ClipboardDocumentIcon, ClipboardIcon, CodeBracketIcon, DocumentIcon, ScissorsIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
   const [lines, setLines] = useState(1);
+  const [consoleHeight, setConsoleHeight] = useState(200); // State for console height
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
   const [consoleOutput, setConsoleOutput] = useState('');
   const [currentFileName, setCurrentFileName] = useState<string | null>(null);
   const [currentFileHandle, setCurrentFileHandle] = useState<FileSystemFileHandle | null>(null);
+  const resizeRef = useRef<HTMLDivElement>(null);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const numberOfLines = e.target.value.split("\n").length;
-        setLines(numberOfLines);
-    };
-
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const numberOfLines = e.target.value.split("\n").length;
+    setLines(numberOfLines);
+  };
 
   const openFile = () => {
     fileInputRef?.current?.click();
@@ -72,7 +72,6 @@ export default function Home() {
         setConsoleOutput('Erro ao salvar o arquivo.');
       }
     } else {
-      debugger
       const fileHandle = await window.showSaveFilePicker({
         suggestedName: 'novo_arquivo.txt',
         types: [{
@@ -117,17 +116,20 @@ export default function Home() {
     setConsoleOutput("Compilação de programas ainda não foi implementada");
   };
 
-  useEffect(() => {
-    if (textAreaRef.current) {
-      textAreaRef.current.style.height = "auto";
-      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
-    }
-  }, [lines]);
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.addEventListener('mousemove', resize);
+    window.addEventListener('mouseup', stopResizing);
+  };
 
-  const handleScroll = () => {
-    if (lineNumbersRef.current && textAreaRef.current) {
-      lineNumbersRef.current.scrollTop = textAreaRef.current.scrollTop;
-    }
+  const resize = (e: MouseEvent) => {
+    const newHeight = window.innerHeight - e.clientY - 20;
+    setConsoleHeight(newHeight);
+  };
+
+  const stopResizing = () => {
+    window.removeEventListener('mousemove', resize);
+    window.removeEventListener('mouseup', stopResizing);
   };
 
   useEffect(() => {
@@ -221,16 +223,13 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-grow">
-
-
-        {/* Editor and Line Numbers */}
-        <div className="flex flex-grow relative">
+      <div className="flex flex-grow relative overflow-hidden">
+        {/* Editor Container */}
+        <div className="relative flex-grow overflow-hidden">
           {/* Line Numbers */}
           <div
-            ref={lineNumbersRef}
             className="bg-gray-900 text-gray-400 text-right pr-4 pt-1 absolute top-0 bottom-0 left-0"
-            style={{ width: '4rem' }}
+            style={{ overflow: 'hidden', width: '3%' }}
           >
             {Array.from({ length: lines }, (_, i) => (
               <div key={i} className="leading-6">{i + 1}</div>
@@ -238,52 +237,55 @@ export default function Home() {
           </div>
 
           {/* Editor */}
-          <div className="flex-grow ml-16">
-            <textarea
-              ref={textAreaRef}
-              className="w-full h-full bg-gray-900 text-white border-none outline-none resize-none leading-6 whitespace-nowrap"
-              onChange={handleInputChange}
-              onScroll={handleScroll}
-              rows={10}
-              cols={50}
-            ></textarea>
-          </div>
+          <textarea
+            ref={textAreaRef}
+            className="w-full h-full bg-gray-900 text-white border-none outline-none resize-none leading-6 whitespace-nowrap"
+            onChange={handleInputChange}
+            onScroll={(e) => {
+              const target = e.target as HTMLTextAreaElement;
+              document.querySelector('.bg-gray-900.text-gray-400.text-right')!.scrollTop = target.scrollTop;
+            }}
+            style={{ marginLeft: '3%', overflowX: 'auto', maxWidth: '97%' }}
+          ></textarea>
         </div>
       </div>
 
-      {/* Container for Console and Status Bar */}
-      <div className="relative">
-        {/* Resizable Console */}
-        <div
-          className="bg-gray-800 p-2 overflow-auto"
-          style={{
-            height: "200px",
-            position: "fixed",
-            bottom: "1.5rem",
-            left: 0,
-            right: 0,
-            resize: "vertical",
-            overflow: "auto"
-          }}
-        >
-          <div className="text-sm">{consoleOutput}</div>
-        </div>
+      {/* Resizing Bar */}
+      <div
+        ref={resizeRef}
+        className="w-full bg-gray-700 hover:bg-gray-600 cursor-row-resize"
+        style={{ height: '10px', marginBottom: '2px' }}
+        onMouseDown={startResizing}
+      ></div>
 
-        {/* Status Bar */}
-        <div
-          className="bg-gray-800 px-4 py-2 flex items-center justify-between"
-          style={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <div className="text-sm">Arquivo: {currentFileName || "Novo"}</div>
-          <div className="text-sm">Linhas: {lines}</div>
-        </div>
+      {/* Resizable Console */}
+      <div
+        className="bg-gray-800 p-2 overflow-auto"
+        style={{
+          height: `${consoleHeight}px`,
+          minHeight: '4%',
+          maxHeight: '45%',
+          resize: "vertical",
+          overflow: "auto"
+        }}
+      >
+        <div className="text-sm">{consoleOutput}</div>
       </div>
 
+      {/* Status Bar */}
+      <div
+        className="bg-gray-800 px-4 py-2 flex items-center justify-between"
+        style={{
+          position: "fixed",
+          minHeight: '4%',
+          bottom: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <div className="text-sm">Arquivo: {currentFileName || "Novo"}</div>
+        <div className="text-sm">Linhas: {lines}</div>
+      </div>
     </div>
   );
 }
