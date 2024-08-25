@@ -151,6 +151,10 @@ export default function Home() {
           event.preventDefault();
           showTeam();
           break;
+        case (event.key === 'F7'):
+          event.preventDefault();
+          compile();
+          break;
         default:
           break;
       }
