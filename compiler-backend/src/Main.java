@@ -2,7 +2,13 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
-        execute("i_");
+        final String content = "st \n linha2 s_teste = \"Gustavo\" \n outra linha ";
+
+        int line = findLineByPosition(content, 6);
+
+        System.out.println("The line is: " + line);
+
+        // execute(content);
     }
 
     public static void execute(String content) {
@@ -34,4 +40,29 @@ public class Main {
             // linha  
         } 
 	}
+
+    /**
+     * 
+     * @param content the file content.
+     * @param position the position to find the line.
+     * @return the line of the position.
+     */
+    private static int findLineByPosition(String content, int position) {
+
+        // run the string until find a \n - then count++. Stop when get to the position.
+
+        int lines = 0;
+        for (int i = 0; i < position; i++) {
+            char current = content.charAt(i);
+            char next = content.charAt(i+1); 
+
+            // check if we found \n
+            if (current == '\\' && next == 'n') {
+                lines++;
+            }
+
+        }
+
+        return lines;
+    }
 }
