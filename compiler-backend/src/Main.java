@@ -1,16 +1,19 @@
+import gals.LexicalError;
+import gals.Lexico;
+import gals.Token;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
-        final String content = "st \n linha2 s_teste = \"Gustavo\" \n outra linha ";
+        final String content = "st \n linha2 s_teste = \"Gustavo\" \n outra linha @";
 
-        int line = findLineByPosition(content, 6);
-
-        System.out.println("The line is: " + line);
-
-        // execute(content);
+         execute(content);
     }
 
+    /**
+     *
+     * */
     public static void execute(String content) {
     Lexico lexico = new Lexico();
         lexico.setInput(content);
@@ -32,8 +35,10 @@ public class Main {
             }
         }
         catch ( LexicalError e ) {  // tratamento de erros
-            System.out.println(e.getMessage() + " em " + e.getPosition());
-        
+            final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + e.getMessage();
+
+            System.out.println(errorMessage);
+
             // e.getMessage() - retorna a mensagem de erro de SCANNER_ERRO (olhar ScannerConstants.java 
             // e adaptar conforme o enunciado da parte 2)
             // e.getPosition() - retorna a posição inicial do erro, tem que adaptar para mostrar a 
@@ -42,27 +47,19 @@ public class Main {
 	}
 
     /**
-     * 
+     * Given a string and a position, returns the line in which this position is located.
      * @param content the file content.
      * @param position the position to find the line.
      * @return the line of the position.
      */
     private static int findLineByPosition(String content, int position) {
-
-        // run the string until find a \n - then count++. Stop when get to the position.
-
         int lines = 0;
         for (int i = 0; i < position; i++) {
             char current = content.charAt(i);
-            char next = content.charAt(i+1); 
-
-            // check if we found \n
-            if (current == '\\' && next == 'n') {
+            if (current == '\n') {
                 lines++;
             }
-
         }
-
         return lines;
     }
 }

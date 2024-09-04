@@ -1,3 +1,5 @@
+package gals;
+
 public interface ScannerConstants
 {
     int[] SCANNER_TABLE_INDEXES = 
@@ -1318,7 +1320,7 @@ public interface ScannerConstants
         "Símbolo inválido",
         "",
         "",
-        "Erro identificando constString",
+        "constante_string inválida",
         "Erro identificando \"&&\"",
         "",
         "",
