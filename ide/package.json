@@ -16,7 +16,9 @@
   "dependencies": {
     "@heroicons/react": "^2.1.5",
     "clsx": "^2.1.1",
+    "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.1",
+    "express": "^4.19.2",
     "systeminformation": "^5.22.11",
     "tailwind-merge": "^2.4.0",
     "tailwindcss": "^3.4.7",
@@ -24,8 +26,6 @@
     "webpack": "^5.93.0"
   },
   "devDependencies": {
-    "next": "^14.2.5",
-    "electron-builder": "^24.13.3",
     "@electron-forge/cli": "^7.4.0",
     "@electron-forge/maker-deb": "^7.4.0",
     "@electron-forge/maker-rpm": "^7.4.0",
@@ -40,9 +40,11 @@
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.19",
     "electron": "^31.3.0",
+    "electron-builder": "^24.13.3",
     "electron-builder-squirrel-windows": "^24.13.3",
     "electron-serve": "^2.0.0",
     "electron-store": "^10.0.0",
+    "next": "^14.2.5",
     "nextron": "^9.1.0",
     "postcss": "^8.4.40",
     "react": "^18.3.1",

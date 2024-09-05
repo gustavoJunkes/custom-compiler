@@ -7,7 +7,7 @@ import { ClipboardDocumentIcon, ClipboardIcon, CodeBracketIcon, DocumentIcon, Sc
 
 export default function Home() {
   const [lines, setLines] = useState(1);
-  const [consoleHeight, setConsoleHeight] = useState(200); // State for console height
+  const [consoleHeight, setConsoleHeight] = useState(200);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [consoleOutput, setConsoleOutput] = useState('');
@@ -113,7 +113,23 @@ export default function Home() {
   };
 
   const compile = async () => {
-    setConsoleOutput("Compilação de programas ainda não foi implementada");
+    setConsoleOutput("Chamando a API Express...");
+  
+    try {
+      const response = await fetch('http://localhost:3000/compile', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            content: textAreaRef.current.value,
+        })
+    });
+    const result = await response.text();
+      setConsoleOutput(`Resposta da API: ${result}`);
+    } catch (error) {
+      setConsoleOutput(`Erro ao chamar a API: ${error.message}`);
+    }
   };
 
   const startResizing = (e: React.MouseEvent) => {

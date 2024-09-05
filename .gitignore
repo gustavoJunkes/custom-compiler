@@ -6,6 +6,7 @@
 
 # Dependencies
 /node_modules
+ide/node_modules
 
 # Testing
 /coverage
@@ -44,5 +45,4 @@ yarn-error.log
 .DS_Store
 *.pem
 
-*.jar
 *.class
