@@ -1,3 +1,5 @@
+package gals;
+
 public interface Constants extends ScannerConstants
 {
     int EPSILON  = 0;
