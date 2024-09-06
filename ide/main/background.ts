@@ -19,27 +19,29 @@ const server = express();
 const port = 3000;
 
 server.use(cors());
-server.use(express.json()); 
+server.use(express.json());
 
 server.post('/compile', (req: any, res: any) => {
     const { content } = req.body;
     const jarPath = 'main/teste2.jar';
 
-    const javaProcess = spawn('java', ['-jar', jarPath, content]);
+    const javaProcess = spawn('java', ['-Dfile.encoding=UTF-8', '-jar', jarPath, content]);
 
     javaProcess.stdout.on('data', (data) => {
-        console.log(`Saída do JAR: ${data}`);
-        res.write(data);  
+        const output = data.toString('utf8');
+        console.log(`Saída do JAR: ${output}`);
+        res.write(output);
     });
 
     javaProcess.stderr.on('data', (data) => {
-        console.error(`Erro do JAR: ${data}`);
-        res.status(500).send(`Erro ao executar o JAR: ${data}`);
+        const error = data.toString('utf8');
+        console.error(`Erro do JAR: ${error}`);
+        res.status(500).send(`Erro ao executar o JAR: ${error}`);
     });
 
     javaProcess.on('close', (code) => {
         console.log(`Processo Java encerrado com código ${code}`);
-        res.end();  
+        res.end();
     });
 });
 
