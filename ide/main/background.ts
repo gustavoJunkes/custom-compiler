@@ -23,7 +23,7 @@ server.use(express.json());
 
 server.post('/compile', (req: any, res: any) => {
     const { content } = req.body;
-    const jarPath = 'main/teste2.jar';
+    const jarPath = 'main/teste3.jar';
 
     const javaProcess = spawn('java', ['-Dfile.encoding=UTF-8', '-jar', jarPath, content]);
 
