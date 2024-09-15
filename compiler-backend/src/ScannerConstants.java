@@ -1222,11 +1222,11 @@ public interface ScannerConstants
 
     String[] SCANNER_ERROR =
     {
-        "Caractere n�o esperado",
+        "símbolo inválido",
         "",
         "",
-        "Erro identificando constString",
-        "Erro identificando \"&&\"",
+        "constante_string inválida",
+        "identificador inválido",
         "",
         "",
         "",
@@ -1252,17 +1252,17 @@ public interface ScannerConstants
         "",
         "Erro identificando constFloat",
         "",
-        "Erro identificando <ignorar>",
-        "Erro identificando id",
+        "comentário de bloco inválido ou não finalizado",
+        "identificador inválido",
         "",
         "",
-        "Erro identificando <ignorar>",
+        "comentário de bloco inválido ou não finalizado",
         "",
         "",
         "Erro identificando constFloat",
-        "Erro identificando <ignorar>",
+        "comentário de bloco inválido ou não finalizado",
         "",
-        "Erro identificando <ignorar>",
+        "comentário de bloco inválido ou não finalizado",
         ""
     };
 
