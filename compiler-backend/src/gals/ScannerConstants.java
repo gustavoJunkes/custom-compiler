@@ -1321,7 +1321,7 @@ public interface ScannerConstants
         "",
         "",
         "constante_string inválida",
-        "Erro identificando \"&&\"",
+        "identificador inválido",
         "",
         "",
         "",
