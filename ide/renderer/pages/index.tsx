@@ -114,19 +114,19 @@ export default function Home() {
 
   const compile = async () => {
     setConsoleOutput("Chamando a API Express...");
-  
+
     try {
       const response = await fetch('http://localhost:3000/compile', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            content: textAreaRef.current.value,
+          content: textAreaRef.current.value,
         })
-    });
-    const result = await response.text();
-      setConsoleOutput(`Resposta da API: ${result}`);
+      });
+      const result = await response.text();
+      setConsoleOutput(`${result}`);
     } catch (error) {
       setConsoleOutput(`Erro ao chamar a API: ${error.message}`);
     }
@@ -289,7 +289,9 @@ export default function Home() {
           overflow: "auto"
         }}
       >
-        <div className="text-sm">{consoleOutput}</div>
+        <div className="text-sm">
+          <pre className="whitespace-pre-wrap">{consoleOutput}</pre>
+        </div>
       </div>
 
       {/* Status Bar */}
