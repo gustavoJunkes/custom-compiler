@@ -25,11 +25,9 @@ public class Main {
             System.out.println(formatter);
         } catch (LexicalError e) {  // tratamento de erros
             final String sequence = getSequenceByPosition(content, e);
-
-            final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + " " + e.getMessage();
-
+            final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + e.getMessage();
             System.out.println(errorMessage);
-            
+
             // e.getMessage() - retorna a mensagem de erro de SCANNER_ERRO (olhar ScannerConstants.java
             // e adaptar conforme o enunciado da parte 2)
             // e.getPosition() - retorna a posição inicial do erro, tem que adaptar para mostrar a
@@ -68,9 +66,8 @@ public class Main {
     }
 
     private static String getSequenceByPosition(String content, LexicalError exception) {
-
         if (exception.getMessage().equalsIgnoreCase("símbolo inválido")) {
-            return String.valueOf(content.charAt(exception.getPosition()));
+            return String.valueOf(content.charAt(exception.getPosition())).concat(" ");
         } else if (exception.getMessage().equalsIgnoreCase("identificador inválido")) {
             // aqui encontrar o identificador completo a partir da posição
             final int endIndex = content.indexOf(" ", exception.getPosition());
@@ -82,6 +79,13 @@ public class Main {
         return "";
     }
 
+    private static int findEndIndex(String content, int position) {
+        int endIndex = position;
+        while (endIndex < content.length() && content.charAt(endIndex) != ' ' && content.charAt(endIndex) != '\n') {
+            endIndex++;
+        }
+        return endIndex;
+    }
 
     /**
      * Given a string and a position, returns the line in which this position is located.
