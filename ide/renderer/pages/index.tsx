@@ -113,7 +113,7 @@ export default function Home() {
   };
 
   const compile = async () => {
-    setConsoleOutput("Chamando a API Express...");
+    setConsoleOutput("Compilando...");
 
     try {
       const response = await fetch('http://localhost:3000/compile', {
