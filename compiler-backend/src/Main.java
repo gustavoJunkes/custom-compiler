@@ -15,7 +15,7 @@ public class Main {
         try {
             Token t = null;
             while ((t = lexico.nextToken()) != null) {
-                final String clazz = getClassById(t.getId());
+                final String clazz = getClassById(t.getId(), t.getPosition());
                 final int line = findLineByPosition(content, t.getPosition());
                 final String lexeme = clazz.equals("constante_float") ? t.getLexeme().replace(",", ".") : t.getLexeme();
                 formatter.format("%n%-9d%-22s%-10s", line, clazz, lexeme);
@@ -27,17 +27,12 @@ public class Main {
             final String sequence = getSequenceByPosition(content, e);
             final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + e.getMessage();
             System.out.println(errorMessage);
-
-            // e.getMessage() - retorna a mensagem de erro de SCANNER_ERRO (olhar ScannerConstants.java
-            // e adaptar conforme o enunciado da parte 2)
-            // e.getPosition() - retorna a posição inicial do erro, tem que adaptar para mostrar a
-            // linha
         } finally {
             formatter.close();
         }
     }
 
-    private static String getClassById(int id) throws LexicalError {
+    private static String getClassById(int id, int position) throws LexicalError {
         if (id >= 3 && id <= 15) {
             return "palavra reservada";
         }
@@ -62,21 +57,22 @@ public class Main {
             return "constante_string";
         }
 
-        throw new LexicalError("Id error");
+        throw new LexicalError("palavra reservada inválida", position);
     }
 
     private static String getSequenceByPosition(String content, LexicalError exception) {
         if (exception.getMessage().equalsIgnoreCase("símbolo inválido")) {
             return String.valueOf(content.charAt(exception.getPosition())).concat(" ");
-        } else if (exception.getMessage().equalsIgnoreCase("identificador inválido")) {
-            // aqui encontrar o identificador completo a partir da posição
-            final int endIndex = content.indexOf(" ", exception.getPosition());
-            return content.substring(exception.getPosition() - 1, endIndex);
-        } else if (exception.getMessage().equalsIgnoreCase("constante_string inválida")) {
-            return ""; // não precisa mostrar simbolo pra constante string invalida, nem pra comentario de bloco
-        }
 
-        return "";
+        } else if (exception.getMessage().equalsIgnoreCase("identificador inválido")) {
+            final int endIndex = findEndIndex(content, exception.getPosition());
+            return content.substring(exception.getPosition(), endIndex).concat(" ");
+
+        } else if (exception.getMessage().equalsIgnoreCase("palavra reservada inválida")) {
+            final int endIndex = findEndIndex(content, exception.getPosition());
+            return content.substring(exception.getPosition(), endIndex).concat(" ");
+
+        } else return "";
     }
 
     private static int findEndIndex(String content, int position) {
