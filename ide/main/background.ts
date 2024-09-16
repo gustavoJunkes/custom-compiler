@@ -1,18 +1,17 @@
 import type { BrowserWindow } from "electron";
 import { app } from "electron";
 import serve from "electron-serve";
-
 import createWindow from "@main/lib/helpers/createWindow";
 import StorageService from "@main/lib/helpers/storageService";
 import express from 'express';
 import cors from 'cors';
 import { spawn } from "child_process";
+import path from 'path';
 
 if (app.isPackaged) serve({ directory: "app" });
 else app.setPath("userData", `${app.getPath("userData")} (development)`);
 
 const storage = new StorageService();
-
 let mainWindow: BrowserWindow;
 
 const server = express();
@@ -23,7 +22,10 @@ server.use(express.json());
 
 server.post('/compile', (req: any, res: any) => {
     const { content } = req.body;
-    const jarPath = 'main/compiler-backend.jar';
+
+    const jarPath = app.isPackaged
+        ? path.join(process.resourcesPath, 'resources/main', 'compiler-backend.jar')
+        : path.join('main', 'compiler-backend.jar');
 
     const javaProcess = spawn('java', ['-Dfile.encoding=UTF-8', '-jar', jarPath, content]);
 
@@ -51,11 +53,11 @@ app.on("ready", async () => {
     if (app.isPackaged) {
         await mainWindow.loadURL("app://./home");
     } else {
-        const port = process.argv[2];
-        await mainWindow.loadURL(`http://localhost:${port}/home`);
+        const devPort = process.argv[2] || port;
+        await mainWindow.loadURL(`http://localhost:${devPort}/home`);
     }
 
-    server.listen(3000, () => {
+    server.listen(port, () => {
         console.log(`Express server is running on http://localhost:${port}`);
     });
 

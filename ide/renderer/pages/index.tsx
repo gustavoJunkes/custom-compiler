@@ -289,7 +289,7 @@ export default function Home() {
           overflow: "auto"
         }}
       >
-        <div className="text-sm">
+        <div className="text-sm h-[calc(100vh-4%)] overflow-y-auto">
           <pre className="whitespace-pre-wrap">{consoleOutput}</pre>
         </div>
       </div>

@@ -4,9 +4,17 @@ copyright: Copyright © 2024 Yoratoni
 directories:
   output: dist
   buildResources: resources
+
 files:
   - from: .
     filter:
       - package.json
       - app
+
+extraResources:
+  - from: main
+    to: resources/main
+    filter:
+      - compiler-backend.jar
+
 publish: null
