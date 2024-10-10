@@ -1,86 +1,38 @@
-import java.util.Formatter;
-
 public class Main {
     public static void main(String[] args) {
-        final String content = args[0].replace("\\n", "\n");
+//        final String content = args[0].replace("\\n", "\n");
+        final String content = "main \n" +
+                " i_lado, i_area; \n" +
+                " read (\"digite um valor para lado:\", i_lado); \n" +
+                " i_area = i_lado * i_lado; \n" +
+                " writeln (i_area); \n" +
+                "end\n";
         execute(content);
     }
 
     public static void execute(String content) {
-        final Formatter formatter = new Formatter();
-        formatter.format("%-9s%-22s%-10s", "linha", "classe", "lexema");
-
         Lexico lexico = new Lexico();
+        Sintatico sintatico = new Sintatico();
+        Semantico semantico = new Semantico();
         lexico.setInput(content);
         try {
-            Token t = null;
-            while ((t = lexico.nextToken()) != null) {
-                final String clazz = getClassById(t.getId(), t.getPosition());
-                final int line = findLineByPosition(content, t.getPosition());
-                final String lexeme = clazz.equals("constante_float") ? t.getLexeme().replace(",", ".") : t.getLexeme();
-                formatter.format("%n%-9d%-22s%-10s", line, clazz, lexeme);
-            }
-            formatter.format("%n%nPrograma compilado com sucesso");
-
-            System.out.println(formatter);
+            sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+            System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {  // tratamento de erros
             final String sequence = getSequenceByPosition(content, e);
             final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + e.getMessage();
             System.out.println(errorMessage);
-        } finally {
-            formatter.close();
-        }
+        } catch (SyntaticError e) {
+            System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage());
 
-//        TROCAR:
-//
-//        Lexico lexico = new Lexico();
-//        lexico.setInput( /* entrada */ );
-//        try
-//        {
-//            Token t = null;
-//            while ( (t = lexico.nextToken()) != null )
-//            {
-//                System.out.println(t.getLexeme() + t.getId());
-//            }
-//        }
-//        catch ( LexicalError e )
-//        {
-//            System.out.println(e.getMessage() + " " + e.getPosition());
-//            //message  olhar ScannerConstants.java, String[] SCANNER_ERROR
-//            //position precisa ser convertida para linha
-//        }
-//
-//
-//        POR:
-//
-////        Lexico lexico = new Lexico();
-////        Sintatico sintatico = new Sintatico();
-////        Semantico semantico = new Semantico();
-////        lexico.setInput( /* entrada */ );
-////        try
-////        {
-////            sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
-////        }
-////        // mensagem: programa compilado com sucesso - área reservada para mensagens
-////
-////        catch ( LexicalError e )
-////        {
-////            //Trata erros léxicos, conforme especificação da parte 2 - do compilador
-////        }
-////        catch ( SyntaticError e )
-////        {
-////            System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage());
-////
-////            //Trata erros sintáticos
-////            //linha 			      sugestão: converter getPosition em linha
-////            //símbolo encontrado    sugestão: implementar um método getToken no sintatico
-////            //símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
-////            // consultar os símbolos esperados no GALS (em Documentação > Tabela de Análise Sintática):
-////        }
-////        catch ( SemanticError e )
-////        {
-////            //Trata erros semânticos
-////        }
+            //Trata erros sintáticos
+            //linha 			      sugestão: converter getPosition em linha
+            //símbolo encontrado    sugestão: implementar um método getToken no sintatico
+            //símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
+            // consultar os símbolos esperados no GALS (em Documentação > Tabela de Análise Sintática):
+        } catch (SemanticError e) {
+            //Trata erros semânticos
+        }
 
     }
 
