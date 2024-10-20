@@ -1,12 +1,12 @@
 public class Main {
     public static void main(String[] args) {
 //        final String content = args[0].replace("\\n", "\n");
-        final String content = "main \n" +
-                " i_lado, i_area; \n" +
-                " read (\"digite um valor para lado:\", i_lado); \n" +
-                " i_area = i_lado * i_lado; \n" +
-                " writeln (i_area); \n" +
-                "end\n";
+        final String content = "main\r\n" + //
+                        " i_lado, i_area;\r\n" + //
+                        " read (\"digite um valor para lado:\", i_lado;\r\n" + //
+                        " i_area = i_lado * i_lado;\r\n" + //
+                        " writeln (i_area);\r\n" + //
+                        "end";
         execute(content);
     }
 
@@ -23,7 +23,11 @@ public class Main {
             final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + e.getMessage();
             System.out.println(errorMessage);
         } catch (SyntaticError e) {
-            System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage());
+            final int line = findLineByPosition(content, e.getPosition());
+            String sequence = getSequenceByPosition(content, e);
+            String expectedTokens = "";
+            String errorMessage = "Erro na linha " + line + " -  Encontrado " + sequence + " esperado " + expectedTokens;
+            System.out.println(errorMessage + " -- - -- " + e.getMessage());
 
             //Trata erros sintáticos
             //linha 			      sugestão: converter getPosition em linha
@@ -64,19 +68,22 @@ public class Main {
         throw new LexicalError("palavra reservada inválida", position);
     }
 
-    private static String getSequenceByPosition(String content, LexicalError exception) {
-        if (exception.getMessage().equalsIgnoreCase("símbolo inválido")) {
+    private static String getSequenceByPosition(String content, AnalysisError exception ) {
+        String message = exception.getMessage();
+        if (message.equalsIgnoreCase("símbolo inválido")) {
             return String.valueOf(content.charAt(exception.getPosition())).concat(" ");
 
-        } else if (exception.getMessage().equalsIgnoreCase("identificador inválido")) {
+        } else if (message.equalsIgnoreCase("identificador inválido") || message.equalsIgnoreCase("palavra reservada inválida")) {
             final int endIndex = findEndIndex(content, exception.getPosition());
             return content.substring(exception.getPosition(), endIndex).concat(" ");
-
-        } else if (exception.getMessage().equalsIgnoreCase("palavra reservada inválida")) {
-            final int endIndex = findEndIndex(content, exception.getPosition());
+        } else {
+            // TODO: encontrar o símbolo da string na posição que o erro acontece - tratar símbolos concatenados com strings -> ;ca
+            System.out.println(content.charAt(exception.getPosition()));;
+            final int endIndex = findEndIndex(content, exception.getPosition()); 
             return content.substring(exception.getPosition(), endIndex).concat(" ");
-
-        } else return "";
+        } 
+        
+        // return "";
     }
 
     private static int findEndIndex(String content, int position) {
@@ -101,7 +108,7 @@ public class Main {
             if (current == '\n') {
                 lines++;
             }
-        }
+        } 
         return lines;
     }
 }
