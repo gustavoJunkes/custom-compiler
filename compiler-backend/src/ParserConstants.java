@@ -121,75 +121,75 @@ public interface ParserConstants
     String[] PARSER_ERROR =
     {
         "",
-        "EOF",
-        "Era esperado reservada",
-        "Era esperado main",
-        "Era esperado end",
-        "Era esperado if",
-        "Era esperado elif",
-        "Era esperado else",
-        "Era esperado false",
-        "Era esperado true",
-        "Era esperado read",
-        "Era esperado write",
-        "Era esperado writeln",
-        "Era esperado repeat",
-        "Era esperado until",
-        "Era esperado while",
-        "Era esperado \"&&\"",
-        "Era esperado \"||\"",
-        "Era esperado \"!\"",
-        "Era esperado \"==\"",
-        "Era esperado \"!=\"",
-        "Era esperado \"<\"",
-        "Era esperado \">\"",
-        "Era esperado \"+\"",
-        "Era esperado \"-\"",
-        "Era esperado \"*\"",
-        "Era esperado \"/\"",
-        "Era esperado \",\"",
-        "Era esperado \";\"",
-        "Era esperado \"=\"",
-        "Era esperado \"(\"",
-        "Era esperado \")\"",
-        "id",
-        "constante_float",
-        "constante_int",
-        "constante_string",
-        "<programa>",
-        "<lista_instrucoes>",
-        "<lista_instrucoes1>",
-        "<instrucao>",
-        "<declaracao_variavel>",
-        "<declaracao_variavel2>",
-        "<comando>",
-        "<comando_entrada>",
-        "<lista_entrada>",
-        "<lista_entrada2>",
-        "<entrada>",
-        "<pergunta>",
-        "<comando_saida>",
-        "<lista_expressoes>",
-        "<lista_expressoes2>",
-        "<comando_selecao>",
-        "<lista_comandos>",
-        "<lista_comandos2>",
-        "<elif>",
-        "<else>",
-        "<comando_repeticao>",
-        "<comando_repeticao2>",
-        "<expressao>",
-        "<lista_id>",
-        "<lista_id2>",
-        "<expressao1>",
-        "<elemento>",
-        "<relacional>",
-        "<relacional1>",
-        "<operador_relacional>",
-        "<aritmetica>",
-        "<aritmetica1>",
-        "<termo>",
-        "<termo1>",
-        "<fator>"
+        "EOF", // Era esperado fim de programa
+        "Era esperado reservada", // Era esperado reservada
+        "Era esperado main", // Era esperado main
+        "Era esperado end", // Era esperado end
+        "Era esperado if", // Era esperado if
+        "Era esperado elif", // Era esperado elif
+        "Era esperado else", // Era esperado else
+        "Era esperado false", // Era esperado false
+        "Era esperado true", // Era esperado true
+        "Era esperado read", // Era esperado read
+        "Era esperado write", // Era esperado write
+        "Era esperado writeln", // Era esperado writeln
+        "Era esperado repeat", // Era esperado repeat
+        "Era esperado until", // Era esperado until
+        "Era esperado while", // Era esperado while
+        "Era esperado \"&&\"", // Era esperado "&&"
+        "Era esperado \"||\"", // Era esperado "||"
+        "Era esperado \"!\"", // Era esperado "!"
+        "Era esperado \"==\"", // Era esperado "=="
+        "Era esperado \"!=\"", // Era esperado "!="
+        "Era esperado \"<\"", // Era esperado "<"
+        "Era esperado \">\"", // Era esperado ">"
+        "Era esperado \"+\"", // Era esperado "+"
+        "Era esperado \"-\"", // Era esperado "-"
+        "Era esperado \"*\"", // Era esperado "*"
+        "Era esperado \"/\"", // Era esperado "/"
+        "Era esperado \",\"", // Era esperado ","
+        "Era esperado \";\"", // Era esperado ";"
+        "Era esperado \"=\"", // Era esperado "="
+        "Era esperado \"(\"", // Era esperado "("
+        "Era esperado \")\"", // Era esperado ")"
+        "id", // Era esperado id
+        "constante_float", // Era esperado constFloat
+        "constante_int", // Era esperado constInt
+        "constante_string", // Era esperado constString
+        "<programa>", // <programa> inválido
+        "<lista_instrucoes>", // <lista_instrucoes> inválido
+        "<lista_instrucoes1>", // <lista_instrucoes1> inválido
+        "<instrucao>", // <instrucao> inválido
+        "<declaracao_variavel>", // <declaracao_variavel> inválido
+        "<declaracao_variavel2>", // <declaracao_variavel2> inválido
+        "<comando>", // <comando> inválido
+        "<comando_entrada>", // <comando_entrada> inválido
+        "<lista_entrada>", // <lista_entrada> inválido
+        "<lista_entrada2>", // <lista_entrada2> inválido
+        "<entrada>", // <entrada> inválido
+        "<pergunta>", // <pergunta> inválido
+        "<comando_saida>", // <comando_saida> inválido
+        "<lista_expressoes>", // <lista_expressoes> inválido
+        "<lista_expressoes2>", // <lista_expressoes2> inválido
+        "<comando_selecao>", // <comando_selecao> inválido
+        "<lista_comandos>", // <lista_comandos> inválido
+        "<lista_comandos2>", // <lista_comandos2> inválido
+        "<elif>", // <elif> inválido
+        "<else>", // <else> inválido
+        "<comando_repeticao>", // <comando_repeticao> inválido
+        "<comando_repeticao2>", // <comando_repeticao2> inválido
+        "<expressao>", // <expressao> inválido
+        "<lista_id>", // <lista_id> inválido
+        "<lista_id2>", // <lista_id2> inválido
+        "<expressao1>", // <expressao1> inválido
+        "<elemento>", // <elemento> inválido
+        "<relacional>", // <relacional> inválido
+        "<relacional1>", // <relacional1> inválido
+        "<operador_relacional>", // <operador_relacional> inválido
+        "<aritmetica>", // <aritmetica> inválido
+        "<aritmetica1>", // <aritmetica1> inválido
+        "<termo>", // <termo> inválido
+        "<termo1>", // <termo1> inválido
+        "<fator>" // <fator> inválido
     };
 }
