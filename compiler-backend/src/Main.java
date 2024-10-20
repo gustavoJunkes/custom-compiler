@@ -1,12 +1,14 @@
 public class Main {
     public static void main(String[] args) {
 //        final String content = args[0].replace("\\n", "\n");
-        final String content = "main\r\n" + //
-                        " i_lado, i_area;\r\n" + //
-                        " read (\"digite um valor para lado:\", i_lado;\r\n" + //
-                        " i_area = i_lado * i_lado;\r\n" + //
-                        " writeln (i_area);\r\n" + //
-                        "end";
+        final String content = "main\n" +
+                "" +
+                "" +
+                "i_lado, i_area;\n" +
+                " read (\"digite um valor para lado: , i_lado;\n" +
+                " i_area = i_lado * i_lado;\n" +
+                " writeln (i_area);\n" +
+                "end\n";
         execute(content);
     }
 
@@ -16,26 +18,85 @@ public class Main {
         Semantico semantico = new Semantico();
         lexico.setInput(content);
         try {
-            sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+            sintatico.parse(lexico, semantico);
             System.out.println("Programa compilado com sucesso");
-        } catch (LexicalError e) {  // tratamento de erros
+        } catch (LexicalError e) {
             final String sequence = getSequenceByPosition(content, e);
             final String errorMessage = "linha " + findLineByPosition(content, e.getPosition()) + ": " + sequence + e.getMessage();
             System.out.println(errorMessage);
         } catch (SyntaticError e) {
             final int line = findLineByPosition(content, e.getPosition());
             String sequence = getSequenceByPosition(content, e);
-            String expectedTokens = "";
+            String expectedTokens = getExpectedTokens(e);
             String errorMessage = "Erro na linha " + line + " -  Encontrado " + sequence + " esperado " + expectedTokens;
             System.out.println(errorMessage + " -- - -- " + e.getMessage());
-
-            //Trata erros sintáticos
-            //linha 			      sugestão: converter getPosition em linha
-            //símbolo encontrado    sugestão: implementar um método getToken no sintatico
-            //símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
-            // consultar os símbolos esperados no GALS (em Documentação > Tabela de Análise Sintática):
         } catch (SemanticError e) {
             //Trata erros semânticos
+        }
+    }
+
+    private static String getExpectedTokens(Exception e) {
+        String message = e.getMessage();
+
+        // TODO: 20/10/2024 melhorar a lógica de retorno de tokens, talvez adicionar cada um em uma constante string pra reutilizar em todos lugares.
+        switch (message) {
+            case "<lista_entrada2>": {
+                return " , )";
+            } case "<programa>": {
+                return "main";
+            } case "<lista_instrucoes>": {
+                return "identificador, read, write, writeln, if, repeat";
+            } case "<lista_instrucoes1>": {
+                return "end, if, read, write, writeln, repeat, identificador";
+            } case "id": {
+                return "identificador"; // esse case está provavelmente errado, o caso em que é chamado é no comando read...
+            } case "<lista_id>": {
+                return "identificador";
+            } case "<lista_id2>": {
+                return ", ; =";
+            } case "<instrucao>": {
+                return "if, read, write, writeln, repeat, identificador";
+            } case "<declaracao_variavel>": {
+                return "identificador";
+            } case "<declaracao_variavel2>": {
+                return "; =";
+            } case "<comando>": {
+                return "end, read, write, writeln, repeat";
+            } case "<comando_entrada>": {
+                return "read";
+            } case "<lista_entrada>": {
+                return "identificador, constante_string";
+            } case "<entrada>": {
+                return "identificador, constante_string";
+            } case "<pergunta>": {
+                return "identificador, constante_string";
+            } case "<comando_saida>": {
+                return "write, writeln";
+            } case "<comando_selecao>": {
+                return "if";
+            } case "<lista_comandos>": {
+                return "if, read, write, writeln, repeat, identificador";
+            } case "<lista_comandos2>": {
+                return "end, if, elif, else, read, write, writeln, repeat, until, while, identificador";
+            } case "<elif>": {
+                return "end, elif, else";
+            } case "<else>": {
+                return "end, else";
+            } case "<comando_repeticao>": {
+                return "repeat";
+            } case "<comando_repeticao2>": {
+                return "until, while";
+            } case "<operador_relacional>": {
+                return "==, !=, <, >";
+            } case "<lista_expressoes>": {
+                return "expressao"; // na especificação existe uma regra para "expressão", e outra para "expressao"
+            } case "<expressao>", "<expressao1>", "<elemento>", "<relacional>", "<relacional1>", "<aritmetica>", "<aritmetica1>", "<termo>", "<termo1>", "<fator>": {
+                return "expressão";
+            } case "<lista_expressoes2>": {
+                return ", )";
+            } default: {
+                return message;
+            }
         }
 
     }
@@ -70,21 +131,32 @@ public class Main {
 
     private static String getSequenceByPosition(String content, AnalysisError exception ) {
         String message = exception.getMessage();
+        int position = exception.getPosition();
+        boolean isConstString = content.charAt(position) == '"' && exception.getCause() instanceof SyntaticError;
+        boolean isEOF = content.charAt(position) == '$';
+
         if (message.equalsIgnoreCase("símbolo inválido")) {
-            return String.valueOf(content.charAt(exception.getPosition())).concat(" ");
+            return String.valueOf(content.charAt(position)).concat(" ");
 
         } else if (message.equalsIgnoreCase("identificador inválido") || message.equalsIgnoreCase("palavra reservada inválida")) {
-            final int endIndex = findEndIndex(content, exception.getPosition());
-            return content.substring(exception.getPosition(), endIndex).concat(" ");
+            final int endIndex = findEndIndex(content, position);
+            return content.substring(position, endIndex).concat(" ");
+        } else if (isConstString) {
+            return "constante_string".concat(" ");
+        } else if (isEOF) {
+            return "EOF".concat(" "); // TODO: 20/10/2024 caso encontre um fim de arquivo - refinar cenário.
+        } else if (message.equalsIgnoreCase("constante_string inválida")){
+            return "";
+        } else if (message.equalsIgnoreCase("comentário de bloco inválido ou não finalizado")) {
+            return "";
         } else {
             // TODO: encontrar o símbolo da string na posição que o erro acontece - tratar símbolos concatenados com strings -> ;ca
-            System.out.println(content.charAt(exception.getPosition()));;
-            final int endIndex = findEndIndex(content, exception.getPosition()); 
-            return content.substring(exception.getPosition(), endIndex).concat(" ");
+            final int endIndex = findEndIndex(content, position);
+            return content.substring(position, endIndex).concat(" ");
         } 
-        
-        // return "";
+
     }
+
 
     private static int findEndIndex(String content, int position) {
         int endIndex = position;
