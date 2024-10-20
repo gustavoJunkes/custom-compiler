@@ -30,7 +30,6 @@ public class Main {
     private static String getExpectedTokens(Exception e) {
         String message = e.getMessage();
 
-        // TODO: 20/10/2024 melhorar a lógica de retorno de tokens, talvez adicionar cada um em uma constante string pra reutilizar em todos lugares.
         switch (message) {
             case "<lista_entrada2>": {
                 return " , )";
@@ -82,14 +81,27 @@ public class Main {
                 return "==, !=, <, >";
             } case "<lista_expressoes>": {
                 return "expressao"; // na especificação existe uma regra para "expressão", e outra para "expressao"
-            } case "<expressao>", "<expressao1>", "<elemento>", "<relacional>", "<relacional1>", "<aritmetica>", "<aritmetica1>", "<termo>", "<termo1>", "<fator>": {
+            }
+            // Separando os casos combinados
+            case "<expressao>":
+            case "<expressao1>":
+            case "<elemento>":
+            case "<relacional>":
+            case "<relacional1>":
+            case "<aritmetica>":
+            case "<aritmetica1>":
+            case "<termo>":
+            case "<termo1>":
+            case "<fator>": {
                 return "expressão";
-            } case "<lista_expressoes2>": {
+            }
+            case "<lista_expressoes2>": {
                 return ", )";
             } default: {
                 return message;
             }
         }
+
 
     }
 
