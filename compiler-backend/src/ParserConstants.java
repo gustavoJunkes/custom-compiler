@@ -122,36 +122,36 @@ public interface ParserConstants
     {
         "",
         "EOF", // Era esperado fim de programa
-        "Era esperado reservada", // Era esperado reservada
-        "Era esperado main", // Era esperado main
-        "Era esperado end", // Era esperado end
-        "Era esperado if", // Era esperado if
-        "Era esperado elif", // Era esperado elif
-        "Era esperado else", // Era esperado else
-        "Era esperado false", // Era esperado false
-        "Era esperado true", // Era esperado true
-        "Era esperado read", // Era esperado read
-        "Era esperado write", // Era esperado write
-        "Era esperado writeln", // Era esperado writeln
-        "Era esperado repeat", // Era esperado repeat
-        "Era esperado until", // Era esperado until
-        "Era esperado while", // Era esperado while
-        "Era esperado \"&&\"", // Era esperado "&&"
-        "Era esperado \"||\"", // Era esperado "||"
-        "Era esperado \"!\"", // Era esperado "!"
-        "Era esperado \"==\"", // Era esperado "=="
-        "Era esperado \"!=\"", // Era esperado "!="
-        "Era esperado \"<\"", // Era esperado "<"
-        "Era esperado \">\"", // Era esperado ">"
-        "Era esperado \"+\"", // Era esperado "+"
-        "Era esperado \"-\"", // Era esperado "-"
-        "Era esperado \"*\"", // Era esperado "*"
-        "Era esperado \"/\"", // Era esperado "/"
-        "Era esperado \",\"", // Era esperado ","
-        "Era esperado \";\"", // Era esperado ";"
-        "Era esperado \"=\"", // Era esperado "="
-        "Era esperado \"(\"", // Era esperado "("
-        "Era esperado \")\"", // Era esperado ")"
+        "reservada", // Era esperado reservada
+        "main", // Era esperado main
+        "end", // Era esperado end
+        "if", // Era esperado if
+        "elif", // Era esperado elif
+        "else", // Era esperado else
+        "false", // Era esperado false
+        "true", // Era esperado true
+        "read", // Era esperado read
+        "write", // Era esperado write
+        "writeln", // Era esperado writeln
+        "repeat", // Era esperado repeat
+        "until", // Era esperado until
+        "while", // Era esperado while
+        "\"&&\"", // Era esperado "&&"
+        "\"||\"", // Era esperado "||"
+        "\"!\"", // Era esperado "!"
+        "\"==\"", // Era esperado "=="
+        "\"!=\"", // Era esperado "!="
+        "\"<\"", // Era esperado "<"
+        "\">\"", // Era esperado ">"
+        "\"+\"", // Era esperado "+"
+        "\"-\"", // Era esperado "-"
+        "\"*\"", // Era esperado "*"
+        "\"/\"", // Era esperado "/"
+        "\",\"", // Era esperado ","
+        "\";\"", // Era esperado ";"
+        "\"=\"", // Era esperado "="
+        "\"(\"", // Era esperado "("
+        "\")\"", // Era esperado ")"
         "id", // Era esperado id
         "constante_float", // Era esperado constFloat
         "constante_int", // Era esperado constInt
