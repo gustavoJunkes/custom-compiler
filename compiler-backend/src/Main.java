@@ -1,14 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-//        final String content = args[0].replace("\\n", "\n");
-        final String content = "main\n" +
-                "" +
-                "" +
-                "i_lado, i_area;\n" +
-                " read (\"digite um valor para lado: , i_lado;\n" +
-                " i_area = i_lado * i_lado;\n" +
-                " writeln (i_area);\n" +
-                "end\n";
+        final String content = args[0].replace("\\n", "\n");
         execute(content);
     }
 
@@ -28,8 +20,8 @@ public class Main {
             final int line = findLineByPosition(content, e.getPosition());
             String sequence = getSequenceByPosition(content, e);
             String expectedTokens = getExpectedTokens(e);
-            String errorMessage = "Erro na linha " + line + " -  Encontrado " + sequence + " esperado " + expectedTokens;
-            System.out.println(errorMessage + " -- - -- " + e.getMessage());
+            String errorMessage = "Erro na linha " + line + " - Encontrado " + sequence + " esperado " + expectedTokens;
+            System.out.println(errorMessage);
         } catch (SemanticError e) {
             //Trata erros semânticos
         }
@@ -49,7 +41,7 @@ public class Main {
             } case "<lista_instrucoes1>": {
                 return "end, if, read, write, writeln, repeat, identificador";
             } case "id": {
-                return "identificador"; // esse case está provavelmente errado, o caso em que é chamado é no comando read...
+                return "identificador";
             } case "<lista_id>": {
                 return "identificador";
             } case "<lista_id2>": {
@@ -144,13 +136,12 @@ public class Main {
         } else if (isConstString) {
             return "constante_string".concat(" ");
         } else if (isEOF) {
-            return "EOF".concat(" "); // TODO: 20/10/2024 caso encontre um fim de arquivo - refinar cenário.
+            return "EOF".concat(" ");
         } else if (message.equalsIgnoreCase("constante_string inválida")){
             return "";
         } else if (message.equalsIgnoreCase("comentário de bloco inválido ou não finalizado")) {
             return "";
         } else {
-            // TODO: encontrar o símbolo da string na posição que o erro acontece - tratar símbolos concatenados com strings -> ;ca
             final int endIndex = findEndIndex(content, position);
             return content.substring(position, endIndex).concat(" ");
         } 
