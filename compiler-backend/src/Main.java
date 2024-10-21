@@ -1,6 +1,13 @@
+import java.util.Objects;
+
 public class Main {
     public static void main(String[] args) {
-        final String content = args[0].replace("\\n", "\n");
+//        final String content = args[0].replace("\\n", "\n");
+        String content = "main if";
+        if (content.length() == 0) {
+            System.out.println("Programa compilado com sucesso");
+            return;
+        }
         execute(content);
     }
 
@@ -133,32 +140,46 @@ public class Main {
         throw new LexicalError("palavra reservada inválida", position);
     }
 
-    private static String getSequenceByPosition(String content, AnalysisError exception ) {
+    private static String getSequenceByPosition(String content, AnalysisError exception) {
         String message = exception.getMessage();
         int position = exception.getPosition();
-        boolean isConstString = content.charAt(position) == '"' && exception.getCause() instanceof SyntaticError;
+
+        if (position >= content.length()) {
+            return "EOF";
+        }
+
+        boolean isConstString = isConstantString(content, position, exception);
         boolean isEOF = content.charAt(position) == '$';
 
-        if (message.equalsIgnoreCase("símbolo inválido")) {
-            return String.valueOf(content.charAt(position)).concat(" ");
-
-        } else if (message.equalsIgnoreCase("identificador inválido") || message.equalsIgnoreCase("palavra reservada inválida")) {
-            final int endIndex = findEndIndex(content, position);
-            return content.substring(position, endIndex).concat(" ");
-        } else if (isConstString) {
-            return "constante_string".concat(" ");
-        } else if (isEOF) {
-            return "EOF".concat(" ");
-        } else if (message.equalsIgnoreCase("constante_string inválida")){
-            return "";
-        } else if (message.equalsIgnoreCase("comentário de bloco inválido ou não finalizado")) {
-            return "";
-        } else {
-            final int endIndex = findEndIndex(content, position);
-            return content.substring(position, endIndex).concat(" ");
-        } 
-
+        switch (message.toLowerCase()) {
+            case "símbolo inválido":
+                return String.valueOf(content.charAt(position)).concat(" ");
+            case "identificador inválido":
+            case "palavra reservada inválida":
+                return getContentSubstring(content, position).concat(" ");
+            case "constante_string inválida":
+            case "comentário de bloco inválido ou não finalizado":
+                return "";
+            default:
+                if (isConstString) {
+                    return "constante_string ";
+                } else if (isEOF) {
+                    return "EOF ";
+                } else {
+                    return getContentSubstring(content, position).concat(" ");
+                }
+        }
     }
+
+    private static boolean isConstantString(String content, int position, AnalysisError exception) {
+        return content.charAt(position) == '"' && exception.getCause() instanceof SyntaticError;
+    }
+
+    private static String getContentSubstring(String content, int position) {
+        int endIndex = findEndIndex(content, position);
+        return content.substring(position, endIndex);
+    }
+
 
 
     private static int findEndIndex(String content, int position) {
