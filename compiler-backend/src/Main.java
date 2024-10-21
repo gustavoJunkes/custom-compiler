@@ -2,8 +2,17 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) {
-//        final String content = args[0].replace("\\n", "\n");
-        String content = "main if";
+        final String content = args[0].replace("\\n", "\n");
+//        String content = "main\n" +
+//                " i_lado, i_area;\n" +
+//                " read (\"digite um valor para lado:\", i_lado);\n" +
+//                " if i_lado > 0\n" +
+//                "  i_area = i_lado * i_lado; \n" +
+//                "  writeln (i_lado);\n" +
+//                " else\n" +
+//                "  writeln (\"valor inválido\");\n" +
+//                " end;\n" +
+//                "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
