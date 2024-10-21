@@ -144,7 +144,7 @@ public class Main {
         String message = exception.getMessage();
         int position = exception.getPosition();
 
-        if (position >= content.length()) {
+        if (position >= content.length()-1) {
             return "EOF";
         }
 
