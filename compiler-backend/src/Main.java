@@ -1,9 +1,11 @@
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Main {
+    private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
+
     public static void main(String[] args) {
-        final String content = "main\n" +
-                "write (\"oi\");\n\n end \n\n\n\n\n\n";
+        final String content = "main \n" +
+                "write (\"oi\");;";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
@@ -185,7 +187,7 @@ public class Main {
 
     private static int findEndIndex(String content, int position) {
         int endIndex = position;
-        while (endIndex < content.length() && content.charAt(endIndex) != ' ' && content.charAt(endIndex) != '\n') {
+        while (endIndex < content.length() && REGEX.matcher(content.substring(endIndex, endIndex+1)).matches()) {
             endIndex++;
         }
         return endIndex;
