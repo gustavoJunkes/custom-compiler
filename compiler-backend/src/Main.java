@@ -172,7 +172,7 @@ public class Main {
     }
 
     private static boolean isConstantString(String content, int position, AnalysisError exception) {
-        return content.charAt(position) == '"' && exception.getCause() instanceof SyntaticError;
+        return content.charAt(position) == '"' && exception instanceof SyntaticError;
     }
 
     private static String getContentSubstring(String content, int position) {
