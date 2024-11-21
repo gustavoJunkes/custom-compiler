@@ -2,17 +2,8 @@ import java.util.Objects;
 
 public class Main {
     public static void main(String[] args) {
-        final String content = args[0].replace("\\n", "\n");
-//        String content = "main\n" +
-//                " i_lado, i_area;\n" +
-//                " read (\"digite um valor para lado:\", i_lado);\n" +
-//                " if i_lado > 0\n" +
-//                "  i_area = i_lado * i_lado; \n" +
-//                "  writeln (i_lado);\n" +
-//                " else\n" +
-//                "  writeln (\"valor inválido\");\n" +
-//                " end;\n" +
-//                "end";
+        final String content = "main\n" +
+                "write (\"oi\");\n\n end \n\n\n\n\n\n";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
@@ -153,7 +144,7 @@ public class Main {
         String message = exception.getMessage();
         int position = exception.getPosition();
 
-        if (position >= content.length()-1) {
+        if (position >= content.length()) {
             return "EOF";
         }
 
@@ -186,7 +177,8 @@ public class Main {
 
     private static String getContentSubstring(String content, int position) {
         int endIndex = findEndIndex(content, position);
-        return content.substring(position, endIndex);
+        final String contentError = content.substring(position, endIndex);
+        return contentError.trim().length() == 0 ? "EOF" : contentError;
     }
 
 
