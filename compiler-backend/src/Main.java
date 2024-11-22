@@ -4,8 +4,9 @@ public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
 
     public static void main(String[] args) {
-        final String content = "main \n" +
-                "write (\"oi\");;";
+        final String content = "mainln \n" +
+                "write(\"oi\");; \n" +
+                "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
@@ -19,6 +20,10 @@ public class Main {
         Semantico semantico = new Semantico();
         lexico.setInput(content);
         try {
+            Token t = null;
+            while ((t = lexico.nextToken()) != null) {
+                verifyToken(t.getId(), t.getPosition());
+            }
             sintatico.parse(lexico, semantico);
             System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {
@@ -114,7 +119,7 @@ public class Main {
 
     }
 
-    private static String getClassById(int id, int position) throws LexicalError {
+    private static String verifyToken(int id, int position) throws LexicalError {
         if (id >= 3 && id <= 15) {
             return "palavra reservada";
         }
