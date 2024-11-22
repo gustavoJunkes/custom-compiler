@@ -4,8 +4,8 @@ public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
 
     public static void main(String[] args) {
-        final String content = "mainln \n" +
-                "write(\"oi\");; \n" +
+        final String content = "main \n" +
+                "write(\"oi\"); \n" +
                 "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
@@ -24,6 +24,7 @@ public class Main {
             while ((t = lexico.nextToken()) != null) {
                 verifyToken(t.getId(), t.getPosition());
             }
+            lexico.setPosition(0);
             sintatico.parse(lexico, semantico);
             System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {
