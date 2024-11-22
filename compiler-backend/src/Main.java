@@ -1,9 +1,11 @@
-import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Main {
+    private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
+
     public static void main(String[] args) {
-        final String content = "main\n" +
-                "write (\"oi\");\n\n end \n\n\n\n\n\n";
+        final String content = "main \n" +
+                "write (\"oi\");;";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
@@ -59,7 +61,7 @@ public class Main {
             } case "<declaracao_variavel2>": {
                 return "; =";
             } case "<comando>": {
-                return "end, read, write, writeln, repeat";
+                return "if, read, write, writeln, repeat";
             } case "<comando_entrada>": {
                 return "read";
             } case "<lista_entrada>": {
@@ -85,7 +87,7 @@ public class Main {
             } case "<comando_repeticao2>": {
                 return "until, while";
             } case "<operador_relacional>": {
-                return "==, !=, <, >";
+                return "== != < >";
             } case "<lista_expressoes>": {
                 return "expressao"; // na especificação existe uma regra para "expressão", e outra para "expressao"
             }
@@ -185,7 +187,7 @@ public class Main {
 
     private static int findEndIndex(String content, int position) {
         int endIndex = position;
-        while (endIndex < content.length() && content.charAt(endIndex) != ' ' && content.charAt(endIndex) != '\n') {
+        while (endIndex < content.length() && REGEX.matcher(content.substring(endIndex, endIndex+1)).matches()) {
             endIndex++;
         }
         return endIndex;
