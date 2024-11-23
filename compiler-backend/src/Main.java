@@ -4,8 +4,13 @@ public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
 
     public static void main(String[] args) {
-        final String content = "main \n" +
-                "write(\"oi\"); \n" +
+        final String content = "main\n" +
+                "  i_raio, f_area;\n" +
+                "\n" +
+                "  read (i_raio);\n" +
+                "  f_area = 3,14 * (i_raio * i_raio);\n" +
+                "  write (f_area);\n" +
+                "\n" +
                 "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
@@ -26,6 +31,7 @@ public class Main {
             }
             lexico.setPosition(0);
             sintatico.parse(lexico, semantico);
+            semantico.printCode();
             System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {
             final String sequence = getSequenceByPosition(content, e);
@@ -188,7 +194,6 @@ public class Main {
         final String contentError = content.substring(position, endIndex);
         return contentError.trim().length() == 0 ? "EOF" : contentError;
     }
-
 
 
     private static int findEndIndex(String content, int position) {

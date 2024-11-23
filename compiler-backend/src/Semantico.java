@@ -3,8 +3,8 @@ import java.util.Stack;
 public class Semantico implements Constants
 {
 
-    StringBuilder code;
-    Stack<String> typeStack = new Stack<>();
+    private StringBuilder code;
+    private Stack<String> typeStack = new Stack<>();
 
     /**
      * Executa as acoes recebidas de acordo com o codigo
@@ -12,7 +12,7 @@ public class Semantico implements Constants
      * */
     public void executeAction(int action, Token token)	throws SemanticError
     {
-        System.out.println("A��o #"+action+", Token: "+token);
+        System.out.println("Ação #"+action+", Token: "+token);
 
         switch (action) {
             case 100:
@@ -27,27 +27,15 @@ public class Semantico implements Constants
                 System.out.println("action 128");
                 stackInt(token);
                 break;
+            case 129:
+                stackFloat(token);
+                break;
             default:
                 System.out.println("Default...");
         }
 
-        System.out.println("---------------------------------------------------------");
-        System.out.println(this.code);
-
-
     }
 
-    /**
-
-     .assembly extern mscorlib {}
-     .assembly _codigo_objeto{}
-     .module _codigo_objeto.exe
-
-     .class public _UNICA{
-     .method static public void _principal(){
-     .entrypoint
-
-     * */
     private void generateHeader() {
         code = new StringBuilder(".assembly extern mscorlib {}\n" +
                 ".assembly _codigo_objeto{}\n" +
@@ -67,12 +55,25 @@ public class Semantico implements Constants
 
     private void stackInt(Token token) {
         typeStack.push("int64");
-        code.append("ldc.64")
+        code.append("ldc.i8")
                 .append(" ")
                 .append(token.getLexeme())
-                .append("\\n")
+                .append("\n")
                 .append("conv.r8");
 
+    }
+
+    private void stackFloat(Token token) {
+        typeStack.push("float64");
+        code.append("ldc.r8")
+                .append(" ")
+                .append(token.getLexeme().replace(",", "."))
+                .append("\n");
+    }
+
+    // TODO - Remove after tests
+    public void printCode() {
+        System.out.println(code.toString());
     }
 
 }
