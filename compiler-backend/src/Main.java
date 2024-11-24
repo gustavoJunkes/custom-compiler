@@ -40,7 +40,9 @@ public class Main {
             String errorMessage = "Erro na linha " + line + " - Encontrado " + sequence + " esperado " + expectedTokens;
             System.out.println(errorMessage);
         } catch (SemanticError e) {
-            System.out.println(e.getMessage());
+            int line = findLineByPosition(content, e.getPosition());
+            String errorMessage = "Erro na linha " + line + " - " + e.getMessage();
+            System.out.println(errorMessage);
         }
     }
 

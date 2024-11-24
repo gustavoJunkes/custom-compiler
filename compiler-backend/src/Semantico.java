@@ -170,7 +170,7 @@ public class Semantico implements Constants {
 
             // verificar na tabela de simbolos se o id foi realmente declarado
             boolean idDeclared = tabelaSimbolos.contains(id);
-            if (!idDeclared) throw new SemanticError(id + "não declarado");
+            if (!idDeclared) throw new SemanticError(id + " não declarado");
 
             // gerar codigo para carregar valor da expressao em id
             code.append("stloc")
