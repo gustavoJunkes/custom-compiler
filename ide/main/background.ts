@@ -7,6 +7,7 @@ import express from 'express';
 import cors from 'cors';
 import { spawn } from "child_process";
 import path from 'path';
+import fs from 'fs';
 
 if (app.isPackaged) serve({ directory: "app" });
 else app.setPath("userData", `${app.getPath("userData")} (development)`);
@@ -20,32 +21,53 @@ const port = 3000;
 server.use(cors());
 server.use(express.json());
 
-server.post('/compile', (req: any, res: any) => {
-    const { content } = req.body;
-
-    const jarPath = app.isPackaged
+server.post('/compile', async (req: express.Request, res: express.Response) => {
+    try {
+      console.log(req.body);
+  
+      const [name, content]: [string, string] = req.body.content;
+  
+      const jarPath = app.isPackaged
         ? path.join(process.resourcesPath, 'resources/main', 'compiler-backend.jar')
         : path.join('main', 'compiler-backend.jar');
-
-    const javaProcess = spawn('java', ['-Dfile.encoding=UTF-8', '-jar', jarPath, content]);
-
-    javaProcess.stdout.on('data', (data) => {
-        const output = data.toString('utf8');
-        console.log(`Saída do JAR: ${output}`);
-        res.write(output);
-    });
-
-    javaProcess.stderr.on('data', (data) => {
-        const error = data.toString('utf8');
-        console.error(`Erro do JAR: ${error}`);
-        res.status(500).send(`Erro ao executar o JAR: ${error}`);
-    });
-
-    javaProcess.on('close', (code) => {
-        console.log(`Processo Java encerrado com código ${code}`);
-        res.end();
-    });
-});
+  
+      const userDocumentsPath = app.getPath('documents');
+      const filePath = path.join(userDocumentsPath, name);
+  
+      fs.writeFileSync(filePath, content, 'utf-8');
+  
+      console.log(`Arquivo salvo em: ${filePath}`);
+  
+      const javaProcess = spawn('java', ['-Dfile.encoding=UTF-8', '-jar', jarPath, content, filePath]);
+  
+      let jarOutput = '';
+      let jarError = '';
+  
+      javaProcess.stdout.on('data', (data) => {
+        jarOutput += data.toString('utf8');
+      });
+  
+      javaProcess.stderr.on('data', (data) => {
+        jarError += data.toString('utf8');
+      });
+  
+      javaProcess.on('close', async (code) => {
+        if (code === 0) {
+          res.json({
+            message: 'Arquivo compilado e salvo com sucesso.',
+            path: filePath,
+            content: jarOutput,
+          });
+        } else {
+          console.error(`Erro do JAR: ${jarError}`);
+          res.status(500).json({ message: 'Erro ao executar o JAR.', error: jarError });
+        }
+      });
+    } catch (err: any) {
+      console.error('Erro ao processar a requisição:', err);
+      res.status(500).json({ message: 'Erro no servidor.', error: err.message });
+    }
+  });
 
 app.on("ready", async () => {
     mainWindow = await createWindow(storage, "main", false);
