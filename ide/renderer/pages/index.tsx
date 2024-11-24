@@ -72,7 +72,7 @@ export default function Home() {
         setConsoleOutput('Erro ao salvar o arquivo.');
       }
     } else {
-      const fileHandle = await window.showSaveFilePicker({
+      const fileHandle: FileSystemFileHandle = await window.showSaveFilePicker({
         suggestedName: 'novo_arquivo.txt',
         types: [{
           description: 'Text Files',
@@ -122,7 +122,7 @@ export default function Home() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          content: textAreaRef.current.value,
+          content: [currentFileName, textAreaRef.current.value],
         })
       });
       const result = await response.text();
