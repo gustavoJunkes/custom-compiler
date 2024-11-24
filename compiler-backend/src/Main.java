@@ -4,28 +4,8 @@ public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
     public static void main(String[] args) {
         // C:/Windows/Microsoft.NET/Framework64/v4.0.30319/ilasm teste.il
-        final String content = ">@\n" +
-                " autor: Joyce Martins\n" +
-                "@<\n" +
-                "\n" +
-                "main\n" +
-                "  i_n, i_qtos;\n" +
-                "  read (\"quantos pares de valores: \", i_n);\n" +
-                "  i_qtos = i_n;\n" +
-                "  i_v1, i_v2;\n" +
-                "  repeat \n" +
-                "    writeln (\"par de valores \", i_qtos - i_n + 1);\n" +
-                "    i_n = i_n - 1;\n" +
-                "\tread (\"digite um numero: \", i_v1);\n" +
-                "    read (\"digite um numero: \", i_v2);\n" +
-                "\trepeat\n" +
-                "\t  if i_v2 == 0\n" +
-                "\t     read (\"valor invalido, digitar um valor diferente de 0: \", i_v2);\n" +
-                "      end;\n" +
-                "\twhile i_v2 == 0;\n" +
-                "\twriteln (\"resultado: \", i_v1 / i_v2);\n" +
-                "  until i_n == 0;\n" +
-                "end";
+        final String content = args[0].replace("\\n", "\n");
+
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;

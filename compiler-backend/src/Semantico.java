@@ -118,7 +118,7 @@ public class Semantico implements Constants {
                 stackString(token);
                 break;
             case 131:
-                subtraction();
+                negative();
                 break;
             default:
                 System.out.println("Default...");
@@ -407,12 +407,9 @@ public class Semantico implements Constants {
     }
 
 
-    // TODO - ver isso depois
-    private void subtraction() {
-//        typeStack.pop();
-//        typeStack.pop();
-//        code.append("sub")
-//                .append("\n");
+    private void negative() {
+        code.append("neg")
+                .append("\n");
     }
 
     private void saveRelationalOperation(Token token) {
@@ -463,16 +460,12 @@ public class Semantico implements Constants {
 
         if (firstOperandType.equals(FLOAT_TYPE) || secondOperandType.equals(FLOAT_TYPE)) {
             typeStack.push(FLOAT_TYPE);
-            code.append("sub")
-                    .append("\n");
         } else {
-            code.append("sub")
-                    .append("\n")
-                    .append("conv.i8")
-                    .append("\n");
             typeStack.push(INT_TYPE);
         }
 
+        code.append("sub")
+                .append("\n");
     }
 
     private void mul() {
@@ -536,7 +529,7 @@ public class Semantico implements Constants {
 
     // TODO - Remove after tests
     public void printCode() {
-        System.out.println("");
+        System.out.println();
         System.out.println("-------------------");
         System.out.println(code.toString());
     }
