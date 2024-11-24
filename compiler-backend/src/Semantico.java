@@ -15,6 +15,7 @@ public class Semantico implements Constants {
     private String operadorRelacional;
     private List<String> tabelaSimbolos = new ArrayList<>();
     private List<String> listaIds = new ArrayList<>();
+    private int rotuleCounter;
 
     /**
      * Executa as acoes recebidas de acordo com o codigo
@@ -49,6 +50,9 @@ public class Semantico implements Constants {
                 break;
             case 108:
                 write();
+                break;
+            case 109:
+                selection();
                 break;
             case 110:
                 selectCommandRotulos();
@@ -147,7 +151,6 @@ public class Semantico implements Constants {
         listaIds.clear();
     }
 
-    // TODO: 24/11/2024 refinar regra dessa acao
     private void setExpressionValue() throws SemanticError {
 
         String expressionType = typeStack.pop();
@@ -224,7 +227,7 @@ public class Semantico implements Constants {
     private void writeConstant(Token token) {
         code.append("ldstr " + token.getLexeme())
                 .append("\n")
-                .append("call void [mscorlib]System.Console::Write (string)")
+                .append("call void [mscorlib]System.Console::Write(string)")
                 .append("\n");
     }
 
@@ -241,7 +244,17 @@ public class Semantico implements Constants {
                 .append("\n");
     }
 
-    // TODO: 24/11/2024 testar essa acao comando selecao - if
+    private void selection() {
+        final String rotulo2 = getRotuleName();
+        pilhaRotulos.push(getRotuleName());
+        pilhaRotulos.push(rotulo2);
+
+        code.append("brfalse")
+                .append(" ")
+                .append(rotulo2)
+                .append("\n");
+    }
+
     private void selectCommandRotulos() {
         String rotuloDesempilhado2 = pilhaRotulos.pop();
         String rotuloDesempilhado1 = pilhaRotulos.pop();
@@ -257,9 +270,8 @@ public class Semantico implements Constants {
                 .append("\n");
     }
 
-    // TODO: 24/11/2024 testar e validar acao
     private void createRotulo(Token token) {
-        String novoRotulo = "novo_rotulo";
+        String novoRotulo = getRotuleName();
 
         code.append("brfalse")
                 .append(" ")
@@ -270,10 +282,13 @@ public class Semantico implements Constants {
     }
 
     private void deleteRotulo() {
-        pilhaRotulos.pop();
+        final String rotulo = pilhaRotulos.pop();
+
+        code.append(rotulo)
+                .append(":")
+                .append("\n");
     }
 
-    // TODO: 24/11/2024 validar acao
     private void afterExpressao(Token token) {
         String rotuloDesempilhado = pilhaRotulos.pop();
 
@@ -284,8 +299,10 @@ public class Semantico implements Constants {
     }
 
     private void breakLine() {
-        code.append("ldstr \"\n\"")
-                .append("call void [mscorlib]System.Console::Write(string) ");
+        code.append("ldstr \"\\n\"")
+                .append("\n")
+                .append("call void [mscorlib]System.Console::Write(string) ")
+                .append("\n");
     }
 
     private void generateHeader() {
@@ -328,9 +345,7 @@ public class Semantico implements Constants {
         typeStack.push(STRING_TYPE);
         code.append("ldstr")
                 .append(" ")
-//                .append("\"")
                 .append(token.getLexeme())
-//                .append("\"")
                 .append("\n");
     }
 
@@ -384,7 +399,7 @@ public class Semantico implements Constants {
             case "!=":
                 code.append("ceq")
                         .append("\n")
-                        .append("ldc.i4.1") // TODO: 23/11/2024 validar implementaçao do operador "diferente"
+                        .append("ldc.i4.1")
                         .append("\n")
                         .append("xor");
                 break;
@@ -447,7 +462,6 @@ public class Semantico implements Constants {
                 .append("\n");
     }
 
-    // TODO: 23/11/2024 adicionar boolean na pilha de tipos
     private void not() {
         code.append("ldc.i4.1")
                 .append("\n")
@@ -479,6 +493,11 @@ public class Semantico implements Constants {
             typeStack.push(BOOLEAN_TYPE);
         }
 
+    }
+
+    private String getRotuleName() {
+        rotuleCounter++;
+        return "L"+rotuleCounter;
     }
 
     // TODO - Remove after tests
