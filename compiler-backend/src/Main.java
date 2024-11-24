@@ -2,15 +2,25 @@ import java.util.regex.Pattern;
 
 public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
-
     public static void main(String[] args) {
-        final String content = "main\n" +
-                "  i_raio, f_area;\n" +
+        // C:/Windows/Microsoft.NET/Framework64/v4.0.30319/ilasm teste.il
+        final String content = ">@\n" +
+                " autor: Joyce Martins\n" +
+                "@<\n" +
                 "\n" +
-                "  read (i_raio);\n" +
-                "  f_area = 3,14 * (i_raio * i_raio);\n" +
-                "  write (f_area);\n" +
+                "main\n" +
+                "  i_ano, i_idade;\n" +
                 "\n" +
+                "  read (\"digite seu ano de nascimento: \", i_ano);\n" +
+                "  i_idade = 2024 - i_ano;\n" +
+                "  if i_idade < 18\n" +
+                "     writeln (\"menor de idade\");\n" +
+                "  else if i_idade < 61\n" +
+                "         writeln (\"adulto\");\n" +
+                "       else  \n" +
+                "         writeln (\"idoso\");\n" +
+                "\t   end;\n" +
+                "  end;\n" +
                 "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
@@ -20,6 +30,7 @@ public class Main {
     }
 
     public static void execute(String content) {
+        FileGenerator fileGenerator = new FileGenerator();
         Lexico lexico = new Lexico();
         Sintatico sintatico = new Sintatico();
         Semantico semantico = new Semantico();
@@ -32,6 +43,7 @@ public class Main {
             lexico.setPosition(0);
             sintatico.parse(lexico, semantico);
             semantico.printCode();
+            fileGenerator.createFile(semantico.getCode());
             System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {
             final String sequence = getSequenceByPosition(content, e);
@@ -44,7 +56,7 @@ public class Main {
             String errorMessage = "Erro na linha " + line + " - Encontrado " + sequence + " esperado " + expectedTokens;
             System.out.println(errorMessage);
         } catch (SemanticError e) {
-            //Trata erros semânticos
+            System.out.println(e.getMessage());
         }
     }
 

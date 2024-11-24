@@ -53,6 +53,9 @@ public class Semantico implements Constants {
             case 110:
                 selectCommandRotulos();
                 break;
+            case 111:
+                deleteRotulo();
+                break;
             case 112:
                 createRotulo(token);
                 break;
@@ -183,6 +186,7 @@ public class Semantico implements Constants {
 
         if (id.startsWith("i_")) {
             code.append("call string [mscorlib]System.Console::ReadLine()")
+                    .append("\n")
                     .append("call int64 [mscorlib]System.Int64::Parse(string)")
                     .append("\n")
                     .append("stloc")
@@ -191,6 +195,7 @@ public class Semantico implements Constants {
         }
         if (id.startsWith("f_")) {
             code.append("call string [mscorlib]System.Console::ReadLine()")
+                    .append("\n")
                     .append("call float64 [mscorlib]System.Double::Parse(string)")
                     .append("\n")
                     .append("stloc")
@@ -206,6 +211,7 @@ public class Semantico implements Constants {
         }
         if (id.startsWith("b_")) {
             code.append("call string [mscorlib]System.Console::ReadLine()")
+                    .append("\n")
                     .append("call bool [mscorlib]System.Boolean::Parse(string)")
                     .append("\n")
                     .append("stloc")
@@ -216,7 +222,8 @@ public class Semantico implements Constants {
     }
 
     private void writeConstant(Token token) {
-        code.append("ldloc " + token.getLexeme())
+        code.append("ldstr " + token.getLexeme())
+                .append("\n")
                 .append("call void [mscorlib]System.Console::Write (string)")
                 .append("\n");
     }
@@ -242,7 +249,7 @@ public class Semantico implements Constants {
         code.append("br")
                 .append(" ")
                 .append(rotuloDesempilhado1)
-                .append("\n");;
+                .append("\n");
         pilhaRotulos.push(rotuloDesempilhado1);
 
         code.append(rotuloDesempilhado2)
@@ -262,6 +269,10 @@ public class Semantico implements Constants {
         pilhaRotulos.push(novoRotulo);
     }
 
+    private void deleteRotulo() {
+        pilhaRotulos.pop();
+    }
+
     // TODO: 24/11/2024 validar acao
     private void afterExpressao(Token token) {
         String rotuloDesempilhado = pilhaRotulos.pop();
@@ -270,7 +281,6 @@ public class Semantico implements Constants {
                 .append(" ")
                 .append(rotuloDesempilhado)
                 .append("\n");
-
     }
 
     private void breakLine() {
@@ -318,9 +328,9 @@ public class Semantico implements Constants {
         typeStack.push(STRING_TYPE);
         code.append("ldstr")
                 .append(" ")
-                .append("\"")
+//                .append("\"")
                 .append(token.getLexeme())
-                .append("\"")
+//                .append("\"")
                 .append("\n");
     }
 
@@ -476,6 +486,10 @@ public class Semantico implements Constants {
         System.out.println("");
         System.out.println("-------------------");
         System.out.println(code.toString());
+    }
+
+    public String getCode() {
+        return code.toString();
     }
 
 }
