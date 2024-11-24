@@ -83,7 +83,6 @@ export default function Home() {
       await writable.write(textAreaRef.current!.value);
       await writable.close();
       setCurrentFileHandle(fileHandle);
-      debugger
       setCurrentFileName(fileHandle.name);
       setConsoleOutput('Arquivo salvo com sucesso.');
     }
