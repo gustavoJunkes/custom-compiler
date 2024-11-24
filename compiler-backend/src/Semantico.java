@@ -11,11 +11,11 @@ public class Semantico implements Constants {
     private static final String STRING_TYPE = "string";
     private StringBuilder code;
     private Stack<String> typeStack = new Stack<>();
-    private Stack<String> pilhaRotulos = new Stack<>();
+    private Stack<String> labelStack = new Stack<>();
     private String operadorRelacional;
     private List<String> tabelaSimbolos = new ArrayList<>();
     private List<String> listaIds = new ArrayList<>();
-    private int rotuleCounter;
+    private int labelCounter;
 
     /**
      * Executa as acoes recebidas de acordo com o codigo
@@ -55,16 +55,22 @@ public class Semantico implements Constants {
                 selection();
                 break;
             case 110:
-                selectCommandRotulos();
+                selectCommandLabel();
                 break;
             case 111:
-                deleteRotulo();
+                deleteLabel();
                 break;
             case 112:
-                createRotulo(token);
+                createLabel();
+                break;
+            case 113:
+                createRepeatLabel();
                 break;
             case 114:
-                afterExpressao(token);
+                afterExpressaoTrue();
+                break;
+            case 115:
+                afterExpressaoFalse();
                 break;
             case 116:
                 and();
@@ -245,56 +251,75 @@ public class Semantico implements Constants {
     }
 
     private void selection() {
-        final String rotulo2 = getRotuleName();
-        pilhaRotulos.push(getRotuleName());
-        pilhaRotulos.push(rotulo2);
+        final String label2 = getLabelName();
+        labelStack.push(getLabelName());
+        labelStack.push(label2);
 
         code.append("brfalse")
                 .append(" ")
-                .append(rotulo2)
+                .append(label2)
                 .append("\n");
     }
 
-    private void selectCommandRotulos() {
-        String rotuloDesempilhado2 = pilhaRotulos.pop();
-        String rotuloDesempilhado1 = pilhaRotulos.pop();
+    private void selectCommandLabel() {
+        String label1 = labelStack.pop();
+        String label2 = labelStack.pop();
 
         code.append("br")
                 .append(" ")
-                .append(rotuloDesempilhado1)
+                .append(label2)
                 .append("\n");
-        pilhaRotulos.push(rotuloDesempilhado1);
+        labelStack.push(label2);
 
-        code.append(rotuloDesempilhado2)
+        code.append(label1)
                 .append(":")
                 .append("\n");
     }
 
-    private void createRotulo(Token token) {
-        String novoRotulo = getRotuleName();
+    private void createLabel() {
+        String label = getLabelName();
 
         code.append("brfalse")
                 .append(" ")
-                .append(novoRotulo)
+                .append(label)
                 .append("\n");
 
-        pilhaRotulos.push(novoRotulo);
+        labelStack.push(label);
     }
 
-    private void deleteRotulo() {
-        final String rotulo = pilhaRotulos.pop();
+    private void deleteLabel() {
+        final String label = labelStack.pop();
 
-        code.append(rotulo)
+        code.append(label)
                 .append(":")
                 .append("\n");
     }
 
-    private void afterExpressao(Token token) {
-        String rotuloDesempilhado = pilhaRotulos.pop();
+    private void createRepeatLabel() {
+        final String labelName = getLabelName();
+
+        code.append(labelName)
+                .append(":")
+                .append("\n");
+
+        labelStack.push(labelName);
+    }
+
+    private void afterExpressaoTrue() {
+        String label = labelStack.pop();
 
         code.append("brtrue")
                 .append(" ")
-                .append(rotuloDesempilhado)
+                .append(label)
+                .append("\n");
+    }
+
+    private void afterExpressaoFalse() {
+        String label = labelStack.pop();
+
+        code.append("brfalse")
+                .append(" ")
+                .append(label)
                 .append("\n");
     }
 
@@ -380,11 +405,14 @@ public class Semantico implements Constants {
         code.append("ldc.i4.0")
                 .append("\n");
     }
+
+
+    // TODO - ver isso depois
     private void subtraction() {
-        typeStack.pop();
-        typeStack.pop();
-        code.append("sub")
-                .append("\n");
+//        typeStack.pop();
+//        typeStack.pop();
+//        code.append("sub")
+//                .append("\n");
     }
 
     private void saveRelationalOperation(Token token) {
@@ -435,10 +463,16 @@ public class Semantico implements Constants {
 
         if (firstOperandType.equals(FLOAT_TYPE) || secondOperandType.equals(FLOAT_TYPE)) {
             typeStack.push(FLOAT_TYPE);
-        } else typeStack.push(INT_TYPE);
+            code.append("sub")
+                    .append("\n");
+        } else {
+            code.append("sub")
+                    .append("\n")
+                    .append("conv.i8")
+                    .append("\n");
+            typeStack.push(INT_TYPE);
+        }
 
-        code.append("sub")
-                .append("\n");
     }
 
     private void mul() {
@@ -495,9 +529,9 @@ public class Semantico implements Constants {
 
     }
 
-    private String getRotuleName() {
-        rotuleCounter++;
-        return "L"+rotuleCounter;
+    private String getLabelName() {
+        labelCounter++;
+        return "L"+ labelCounter;
     }
 
     // TODO - Remove after tests

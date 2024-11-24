@@ -9,18 +9,22 @@ public class Main {
                 "@<\n" +
                 "\n" +
                 "main\n" +
-                "  i_ano, i_idade;\n" +
-                "\n" +
-                "  read (\"digite seu ano de nascimento: \", i_ano);\n" +
-                "  i_idade = 2024 - i_ano;\n" +
-                "  if i_idade < 18\n" +
-                "     writeln (\"menor de idade\");\n" +
-                "  else if i_idade < 61\n" +
-                "         writeln (\"adulto\");\n" +
-                "       else  \n" +
-                "         writeln (\"idoso\");\n" +
-                "\t   end;\n" +
-                "  end;\n" +
+                "  i_n, i_qtos;\n" +
+                "  read (\"quantos pares de valores: \", i_n);\n" +
+                "  i_qtos = i_n;\n" +
+                "  i_v1, i_v2;\n" +
+                "  repeat \n" +
+                "    writeln (\"par de valores \", i_qtos - i_n + 1);\n" +
+                "    i_n = i_n - 1;\n" +
+                "\tread (\"digite um numero: \", i_v1);\n" +
+                "    read (\"digite um numero: \", i_v2);\n" +
+                "\trepeat\n" +
+                "\t  if i_v2 == 0\n" +
+                "\t     read (\"valor invalido, digitar um valor diferente de 0: \", i_v2);\n" +
+                "      end;\n" +
+                "\twhile i_v2 == 0;\n" +
+                "\twriteln (\"resultado: \", i_v1 / i_v2);\n" +
+                "  until i_n == 0;\n" +
                 "end";
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
