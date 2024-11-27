@@ -3,17 +3,17 @@ import java.util.regex.Pattern;
 public class Main {
     private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
     public static void main(String[] args) {
-        // C:/Windows/Microsoft.NET/Framework64/v4.0.30319/ilasm teste.il
         final String content = args[0].replace("\\n", "\n");
+        final String fileName = args[1];
 
         if (content.length() == 0) {
             System.out.println("Programa compilado com sucesso");
             return;
         }
-        execute(content);
+        execute(content, fileName);
     }
 
-    public static void execute(String content) {
+    public static void execute(String content, String fileName) {
         FileGenerator fileGenerator = new FileGenerator();
         Lexico lexico = new Lexico();
         Sintatico sintatico = new Sintatico();
@@ -26,8 +26,7 @@ public class Main {
             }
             lexico.setPosition(0);
             sintatico.parse(lexico, semantico);
-            semantico.printCode();
-            fileGenerator.createFile(semantico.getCode());
+            fileGenerator.createFile(semantico.getCode(), fileName);
             System.out.println("Programa compilado com sucesso");
         } catch (LexicalError e) {
             final String sequence = getSequenceByPosition(content, e);

@@ -21,8 +21,6 @@ public class Semantico implements Constants {
      * Executa as acoes recebidas de acordo com o codigo
      */
     public void executeAction(int action, Token token) throws SemanticError {
-        System.out.println("Ação #" + action + ", Token: " + token);
-
         switch (action) {
             case 100:
                 generateHeader();
@@ -121,7 +119,6 @@ public class Semantico implements Constants {
                 negative();
                 break;
             default:
-                System.out.println("Default...");
         }
 
     }
@@ -435,7 +432,6 @@ public class Semantico implements Constants {
                 code.append("clt");
                 break;
             default:
-                System.out.println("Default -> relational operation not identified...");
         }
         code.append("\n");
         typeStack.push(BOOLEAN_TYPE);
@@ -525,13 +521,6 @@ public class Semantico implements Constants {
     private String getLabelName() {
         labelCounter++;
         return "L"+ labelCounter;
-    }
-
-    // TODO - Remove after tests
-    public void printCode() {
-        System.out.println();
-        System.out.println("-------------------");
-        System.out.println(code.toString());
     }
 
     public String getCode() {
