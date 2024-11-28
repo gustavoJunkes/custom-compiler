@@ -114,6 +114,11 @@ export default function Home() {
 
   const compile = async () => {
     setConsoleOutput("Compilando...");
+    
+    if (currentFileName == null || currentFileName == "Novo") {
+      setConsoleOutput("Somente é possível compilar arquivos salvos.");
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:3000/compile', {
@@ -126,7 +131,8 @@ export default function Home() {
         })
       });
       const result = await response.text();
-      setConsoleOutput(`${result}`);
+      const convertedResult = JSON.parse(result);
+      setConsoleOutput(`${convertedResult.content}`);
     } catch (error) {
       setConsoleOutput(`Erro ao chamar a API: ${error.message}`);
     }
