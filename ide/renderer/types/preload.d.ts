@@ -1,8 +1,9 @@
-import type { IpcBridge } from "@main/preload";
-
-
 declare global {
     interface Window {
-        ipcBridge: IpcBridge;
+      ipcBridge: (url: string, options?: IpcRequestOptions) => Promise<IpcResponse>;
+      electronAPI: {
+        openFileDialog: () => Promise<string[]>;
+        readFile: (filePath: string) => string;
+      };
     }
-}
+  }

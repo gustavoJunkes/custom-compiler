@@ -62,59 +62,76 @@ export default function Home() {
   }
 
   const saveFile = async () => {
-    if (currentFileHandle && currentFileName != "Novo") {
+    if (currentFileHandle && currentFileName !== "Novo") {
       try {
-        const writable = await currentFileHandle.createWritable();
-        await writable.write(textAreaRef.current!.value);
-        await writable.close();
+        const filePath = currentFileHandle.path;
+  
+        window.electronAPI.writeFile(filePath, textAreaRef.current!.value);
+  
         setConsoleOutput('Arquivo salvo com sucesso.');
       } catch (err) {
         setConsoleOutput('Erro ao salvar o arquivo.');
+        console.error('Erro ao salvar arquivo:', err);
       }
     } else {
-      const fileHandle: FileSystemFileHandle = await window.showSaveFilePicker({
-        suggestedName: 'novo_arquivo.txt',
-        types: [{
-          description: 'Text Files',
-          accept: { 'text/plain': ['.txt'] }
-        }]
-      });
-      const writable = await fileHandle.createWritable();
-      await writable.write(textAreaRef.current!.value);
-      await writable.close();
-      setCurrentFileHandle(fileHandle);
-      setCurrentFileName(fileHandle.name);
-      setConsoleOutput('Arquivo salvo com sucesso.');
+      try {
+        const filePath = await window.electronAPI.saveFileDialog("novo_arquivo.txt");
+  
+        if (filePath) {
+          window.electronAPI.writeFile(filePath, textAreaRef.current!.value);
+  
+          setCurrentFileHandle({ path: filePath } as FileSystemFileHandle);
+          setCurrentFileName(filePath.split("\\").pop()!);
+          setConsoleOutput('Arquivo salvo com sucesso.');
+        } else {
+          setConsoleOutput('Nenhum arquivo foi selecionado.');
+        }
+      } catch (err) {
+        setConsoleOutput('Erro ao salvar o arquivo.');
+      }
+    }
+  };
+  
+  
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleFileChange = async () => {
+    if (isDialogOpen) return;
+
+    setIsDialogOpen(true);
+
+    try {
+      const filePaths = await window.electronAPI.openFileDialog();
+
+      if (filePaths && filePaths.length > 0) {
+        const filePath = filePaths[0];
+
+        const content = await window.electronAPI.readFile(filePath);
+
+        setCurrentFileHandle({ path: filePath } as FileSystemFileHandle);
+        setCurrentFileName(filePath.split("\\").pop()!);
+        if (textAreaRef.current) {
+          textAreaRef.current.value = content;
+          const numberOfLines = content.split("\n").length;
+          setLines(numberOfLines);
+        }
+      } else {
+        alert("Nenhum arquivo selecionado.");
+      }
+    } catch (error) {
+      alert("Erro ao abrir o arquivo: " + error.message);
+    } finally {
+      setIsDialogOpen(false);
     }
   };
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
 
-    if (file && file.type === 'text/plain') {
-      const fileHandle = await window.showOpenFilePicker({
-        types: [{ description: 'Text Files', accept: { 'text/plain': ['.txt'] } }],
-      }).then((fileHandles: any) => fileHandles[0]);
 
-      setCurrentFileHandle(fileHandle);
-      setCurrentFileName(file.name);
-
-      const content = await file.text();
-      if (textAreaRef.current) {
-        textAreaRef.current.value = content;
-        const numberOfLines = content.split('\n').length;
-        setLines(numberOfLines);
-      }
-    } else {
-      alert('Erro ao abrir o arquivo. Por favor, selecione um arquivo de texto.');
-    }
-
-    event.target.value = '';
-  };
 
   const compile = async () => {
     setConsoleOutput("Compilando...");
-    
+
     if (currentFileName == null || currentFileName == "Novo") {
       setConsoleOutput("Somente é possível compilar arquivos salvos.");
       return;
@@ -127,7 +144,7 @@ export default function Home() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          content: [currentFileName, textAreaRef.current.value],
+          content: [currentFileHandle.path, textAreaRef.current.value],
         })
       });
       const result = await response.text();
@@ -137,6 +154,7 @@ export default function Home() {
       setConsoleOutput(`Erro ao chamar a API: ${error.message}`);
     }
   };
+  
 
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -202,7 +220,7 @@ export default function Home() {
               <span>Novo</span>
               <span className="text-xs">[Ctrl N]</span>
             </div>
-            <div className="flex items-center space-x-1 cursor-pointer" onClick={openFile}>
+            <div className="flex items-center space-x-1 cursor-pointer" onClick={handleFileChange}>
               <DocumentIcon className="h-5 w-5" />
               <span>Abrir</span>
               <span className="text-xs">[Ctrl O]</span>

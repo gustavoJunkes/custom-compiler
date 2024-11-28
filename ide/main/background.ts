@@ -1,13 +1,13 @@
-import type { BrowserWindow } from "electron";
-import { app } from "electron";
-import serve from "electron-serve";
 import createWindow from "@main/lib/helpers/createWindow";
 import StorageService from "@main/lib/helpers/storageService";
-import express from 'express';
-import cors from 'cors';
 import { spawn } from "child_process";
-import path from 'path';
+import cors from 'cors';
+import type { BrowserWindow } from "electron";
+import { app, dialog, ipcMain } from "electron";
+import serve from "electron-serve";
+import express from 'express';
 import fs from 'fs';
+import path from 'path';
 
 if (app.isPackaged) serve({ directory: "app" });
 else app.setPath("userData", `${app.getPath("userData")} (development)`);
@@ -25,14 +25,11 @@ server.post('/compile', async (req: express.Request, res: express.Response) => {
     try {
       console.log(req.body);
   
-      const [name, content]: [string, string] = req.body.content;
+      const [filePath, content]: [string, string] = req.body.content;
   
       const jarPath = app.isPackaged
         ? path.join(process.resourcesPath, 'resources/main', 'compiler-backend.jar')
         : path.join('main', 'compiler-backend.jar');
-  
-      const userDocumentsPath = app.getPath('documents');
-      const filePath = path.join(userDocumentsPath, name);
   
       fs.writeFileSync(filePath, content, 'utf-8');
   
@@ -86,7 +83,37 @@ app.on("ready", async () => {
     mainWindow.show();
 });
 
+ipcMain.handle("open-file-dialog", async () => {
+  const result = await dialog.showOpenDialog({
+    title: "Abrir Arquivo",
+    properties: ["openFile"],
+    filters: [
+      { name: "Text Files", extensions: ["txt"] },
+    ],
+  });
+
+  return result.canceled ? [] : result.filePaths;
+});
+
+ipcMain.handle("save-file-dialog", async (event, defaultName) => {
+  const result = await dialog.showSaveDialog({
+    defaultPath: defaultName,
+    filters: [{ name: "Text Files", extensions: ["txt"] }],
+  });
+  return result.filePath;
+});
+
+ipcMain.handle('get-app-is-packaged', () => {
+  return app.isPackaged;
+});
+
+ipcMain.handle("create-writable", async (event, filePath) => {
+  const writable = fs.createWriteStream(filePath, { flags: 'w' });
+  return writable;
+});
+
+
 export {
-    storage,
-    mainWindow
+  mainWindow, storage
 };
+
