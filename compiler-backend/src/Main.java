@@ -1,7 +1,9 @@
 import java.util.regex.Pattern;
 
 public class Main {
-    private static Pattern REGEX = Pattern.compile("[a-zA-Z0-9_]");
+    private static Pattern REGEX_PALAVRA_RESERVADA = Pattern.compile("[a-zA-Z0-9_]");
+    private static Pattern REGEX_SIMBOLOS = Pattern.compile("[a-zA-Z0-9_;#@$%^&*()\\-+=/|\\\\]");
+
     public static void main(String[] args) {
         final String content = args[0].replace("\\n", "\n");
         final String fileName = args[1];
@@ -167,7 +169,7 @@ public class Main {
                 return String.valueOf(content.charAt(position)).concat(" ");
             case "identificador inválido":
             case "palavra reservada inválida":
-                return getContentSubstring(content, position).concat(" ");
+                return getContentSubstring(content, position, true).concat(" ");
             case "constante_string inválida":
             case "comentário de bloco inválido ou não finalizado":
                 return "";
@@ -177,7 +179,7 @@ public class Main {
                 } else if (isEOF) {
                     return "EOF ";
                 } else {
-                    return getContentSubstring(content, position).concat(" ");
+                    return getContentSubstring(content, position, false).concat(" ");
                 }
         }
     }
@@ -186,16 +188,19 @@ public class Main {
         return content.charAt(position) == '"' && exception instanceof SyntaticError;
     }
 
-    private static String getContentSubstring(String content, int position) {
-        int endIndex = findEndIndex(content, position);
+    private static String getContentSubstring(String content, int position, boolean isPalavraReservada) {
+        int endIndex = findEndIndex(content, position, isPalavraReservada);
         final String contentError = content.substring(position, endIndex);
         return contentError.trim().length() == 0 ? "EOF" : contentError;
     }
 
-
-    private static int findEndIndex(String content, int position) {
+    // todo - melhorar logica do regex
+    private static int findEndIndex(String content, int position, boolean isPalavraReservada) {
         int endIndex = position;
-        while (endIndex < content.length() && REGEX.matcher(content.substring(endIndex, endIndex+1)).matches()) {
+
+        Pattern regex = isPalavraReservada ? REGEX_PALAVRA_RESERVADA : REGEX_SIMBOLOS;
+
+        while (endIndex < content.length() && regex.matcher(content.substring(endIndex, endIndex+1)).matches()) {
             endIndex++;
         }
         return endIndex;
